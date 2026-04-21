@@ -2,63 +2,180 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Solicitud Previnca Salud</title>
-    </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previnca Salud - Afiliación Digital</title>
+    <style>
+        :root {
+            --primary: #004a99;
+            --secondary: #00a1e4;
+            --light-bg: #f4f7f9;
+            --white: #ffffff;
+            --text: #333;
+            --border: #d1d9e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--secondary);
+        }
+
+        #successScreen {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #successScreen.show {
+            display: block;
+        }
+
+        .show-form {
+            display: block;
+        }
+
+        .hide-form {
+            display: none;
+        }
+    </style>
+</head>
 <body>
+
+    <div class="container" id="mainContainer">
+        <div id="formContent" class="show-form">
+            <div class="header">
+                <h1>Solicitud de Afiliación</h1>
+                <p>Previnca Salud</p>
+            </div>
+
+            <div class="form-group">
+                <label>DNI</label>
+                <input type="number" id="dni" placeholder="Ej: 30123456">
+            </div>
+
+            <div class="form-group">
+                <label>Apellido</label>
+                <input type="text" id="apellido">
+            </div>
+
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="nombre">
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email">
+            </div>
+
+            <div class="form-group">
+                <label>Celular</label>
+                <input type="tel" id="celular">
+            </div>
+
+            <button type="button" class="btn-submit" onclick="submitForm()">Enviar Solicitud</button>
+        </div>
+
+        <div id="successScreen">
+            <h2 style="color: green;">¡Solicitud Enviada!</h2>
+            <p>Gracias por elegir Previnca Salud. Nos contactaremos a la brevedad.</p>
+        </div>
+    </div>
+
     <script>
-function submitForm() {
-    const chk = document.getElementById('confirmCheck');
-    if (!chk.checked) {
-        chk.style.outline = '2px solid var(--red)';
-        setTimeout(() => chk.style.outline = '', 2000);
-        return;
-    }
+        function submitForm() {
+            const btn = document.querySelector('.btn-submit');
+            btn.textContent = 'Enviando...';
+            btn.disabled = true;
 
-    const btn = document.querySelector('.btn-submit');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = 'Enviando a ZOHO... ⏳';
-    btn.disabled = true;
+            const formData = new URLSearchParams();
+            formData.append('dni', document.getElementById('dni').value);
+            formData.append('apellido', document.getElementById('apellido').value);
+            formData.append('nombre', document.getElementById('nombre').value);
+            formData.append('mail', document.getElementById('email').value);
+            formData.append('celular', document.getElementById('celular').value);
 
-    // Recolectamos los datos para enviarlos a tu Google Sheets
-    const formData = new URLSearchParams();
-    formData.append('dni', document.getElementById('dni').value);
-    formData.append('apellido', document.getElementById('apellido').value);
-    formData.append('nombre', document.getElementById('nombre').value);
-    formData.append('fecha_nacimiento', document.getElementById('fechaNac').value);
-    formData.append('domicilio', document.getElementById('domicilio').value);
-    formData.append('localidad', document.getElementById('localidad').value);
-    formData.append('codigo_postal', document.getElementById('cp').value);
-    formData.append('celular', document.getElementById('celular').value);
-    formData.append('mail', document.getElementById('email').value);
-    formData.append('grupo_familiar', vals.grupo === 'si' ? 'Con Grupo' : 'Solo Titular');
-    formData.append('obra_social', document.getElementById('obraSocialSelect').value || 'No tiene');
-    formData.append('alergia', getActiveChips('alergiaChips') || 'No presenta');
-    formData.append('enfermedad_cronica', getActiveChips('cronicaTitularDetalle') || 'No presenta');
-    formData.append('plan', document.getElementById('plan').value);
-    formData.append('modalidad_pago', vals.pago || 'Efectivo');
-    formData.append('vigencia', document.getElementById('vigencia').value);
-    formData.append('observaciones', 'ID: ' + solicitudID);
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyRD80bHzltVeqp8k17tacqqVcB4E1MOG9da6jxUf8/exec';
 
-    // URL de tu Google Script
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyRD80bHzltVeqp8k17tacqqVcB4E1MOG9da6jxUf8/exec';
-
-    fetch(scriptURL, {
-        method: 'POST',
-        mode: 'no-cors', 
-        body: formData
-    })
-    .then(() => {
-        // Al terminar el envío, mostramos la pantalla de éxito que ya tenías diseñada
-        for (let i = 1; i <= 4; i++) document.getElementById('step' + i).style.display = 'none';
-        document.getElementById('progressFill').style.width = '100%';
-        document.getElementById('stepTitle').textContent = '¡Enviado!';
-        document.getElementById('successScreen').classList.add('show');
-        document.getElementById('successID').textContent = solicitudID;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Hubo un problema al enviar los datos.');
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    });
-}
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            })
+            .then(() => {
+                document.getElementById('formContent').classList.add('hide-form');
+                document.getElementById('successScreen').classList.add('show');
+            })
+            .catch(error => {
+                console.error('Error!', error);
+                alert('Hubo un error al enviar. Intente nuevamente.');
+                btn.disabled = false;
+                btn.textContent = 'Enviar Solicitud';
+            });
+        }
+    </script>
+</body>
+</html>
