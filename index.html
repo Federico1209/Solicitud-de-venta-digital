@@ -2,101 +2,127 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solicitud de Afiliación · Previnca Salud</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previnca Salud - Solicitud Profesional</title>
     <style>
-        :root {
-            --navy: #1B3A6B; --blue: #2563EB; --lblue: #EFF6FF; --teal: #0F766E;
-            --lteal: #F0FDFA; --orange: #EA580C; --lorg: #FFF7ED; --green: #15803D;
-            --lgreen: #F0FDF4; --red: #DC2626; --lred: #FEF2F2; --white: #FFFFFF;
-            --gray50: #F8FAFC; --gray100: #F1F5F9; --gray200: #E2E8F0; --gray400: #94A3B8;
-            --gray600: #475569; --gray800: #1E293B; --radius: 14px;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', sans-serif; background: linear-gradient(160deg, #0F2557 0%, #1B3A6B 45%, #0F4C81 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-bottom: 40px; }
-        .app-header { width: 100%; max-width: 480px; padding: 28px 24px 0; display: flex; align-items: center; justify-content: space-between; }
-        .logo-area { display: flex; align-items: center; gap: 10px; color: white; }
-        .card { width: 100%; max-width: 480px; background: var(--white); border-radius: 24px; margin-top: 24px; padding: 28px 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.16); }
-        .field { margin-bottom: 18px; }
-        label { display: block; font-size: 12px; font-weight: 600; color: var(--gray600); margin-bottom: 6px; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 13px; border: 1.5px solid var(--gray200); border-radius: var(--radius); background: var(--gray50); outline: none; }
-        .btn-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--teal), var(--green)); color: white; border: none; border-radius: var(--radius); font-weight: 700; cursor: pointer; margin-top: 20px; }
-        .success-screen { display: none; text-align: center; }
-        .success-screen.show { display: block; }
+        :root { --primary: #1B3A6B; --accent: #0F766E; --bg: #f0f4f8; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 650px; }
+        h1 { color: var(--primary); text-align: center; margin-bottom: 25px; border-bottom: 3px solid var(--accent); padding-bottom: 10px; }
+        .section-header { background: var(--primary); color: white; padding: 8px 15px; border-radius: 5px; margin: 20px 0 15px; font-weight: bold; text-transform: uppercase; font-size: 14px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #444; font-size: 13px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+        textarea { height: 80px; resize: none; }
+        .btn-submit { background: var(--accent); color: white; border: none; padding: 18px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        .btn-submit:hover { background: #085a54; transform: translateY(-2px); }
+        #successScreen { display: none; text-align: center; padding: 40px; }
+        @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<header class="app-header">
-    <div class="logo-area"><strong>Previnca Salud</strong></div>
-</header>
-
-<div class="card">
+<div class="container">
     <div id="formContent">
-        <h2 style="margin-bottom: 20px; color: var(--navy);">Datos del Titular</h2>
-        
-        <div class="field">
+        <h1>Solicitud de Afiliación</h1>
+
+        <div class="section-header">1. Datos del Titular</div>
+        <div class="form-group">
             <label>DNI</label>
             <input type="number" id="dni" required>
         </div>
-        <div class="field">
-            <label>Apellido</label>
-            <input type="text" id="apellido" required>
+        <div class="grid">
+            <div class="form-group"><label>Apellido</label><input type="text" id="apellido" required></div>
+            <div class="form-group"><label>Nombre</label><input type="text" id="nombre" required></div>
         </div>
-        <div class="field">
-            <label>Nombre</label>
-            <input type="text" id="nombre" required>
+        <div class="grid">
+            <div class="form-group"><label>Fecha de Nacimiento</label><input type="date" id="fechaNac"></div>
+            <div class="form-group"><label>Celular</label><input type="tel" id="celular" required></div>
         </div>
-        <div class="field">
-            <label>Fecha de Nacimiento</label>
-            <input type="date" id="fechaNac" required>
+        <div class="form-group"><label>Email</label><input type="email" id="email"></div>
+        <div class="form-group"><label>Domicilio</label><input type="text" id="domicilio"></div>
+        <div class="grid">
+            <div class="form-group"><label>Localidad</label><input type="text" id="localidad"></div>
+            <div class="form-group"><label>Código Postal</label><input type="text" id="cp"></div>
         </div>
-        <div class="field">
-            <label>Domicilio</label>
-            <input type="text" id="domicilio" required>
-        </div>
-        <div class="field">
-            <label>Localidad</label>
-            <input type="text" id="localidad" required>
-        </div>
-        <div class="field">
-            <label>Código Postal</label>
-            <input type="number" id="cp" required>
-        </div>
-        <div class="field">
-            <label>Celular</label>
-            <input type="tel" id="celular" required>
-        </div>
-        <div class="field">
-            <label>Email</label>
-            <input type="email" id="email">
-        </div>
-        <div class="field">
-            <label>Plan</label>
-            <select id="plan">
-                <option value="Individual A">Individual A</option>
-                <option value="Familiar A">Familiar A</option>
-            </select>
+        <div class="grid">
+            <div class="form-group">
+                <label>Grupo Familiar</label>
+                <select id="grupoFamiliar">
+                    <option value="Solo Titular">Solo Titular</option>
+                    <option value="Titular y Cónyuge">Titular y Cónyuge</option>
+                    <option value="Grupo Familiar Completo">Grupo Familiar Completo</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Obra Social</label><input type="text" id="obraSocial" placeholder="¿Tiene actualmente?"></div>
         </div>
 
-        <button type="button" class="btn-submit" onclick="submitForm()">Enviar a ZOHO CRM ⚡</button>
+        <div class="section-header">2. Antecedentes de Salud</div>
+        <div class="form-group">
+            <label>Alergias</label>
+            <input type="text" id="alergia" placeholder="Describa alergias o ponga 'Ninguna'">
+        </div>
+        <div class="form-group">
+            <label>Enfermedades Crónicas</label>
+            <input type="text" id="enfermedadCronica" placeholder="Describa o ponga 'Ninguna'">
+        </div>
+
+        <div class="section-header">3. Plan y Modalidad de Pago</div>
+        <div class="grid">
+            <div class="form-group">
+                <label>Plan a Contratar</label>
+                <select id="plan">
+                    <option value="Plan Global">Plan Global</option>
+                    <option value="Plan Vital">Plan Vital</option>
+                    <option value="Plan Integral">Plan Integral</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Modalidad de Pago</label>
+                <select id="pago">
+                    <option value="Débito Automático">Débito Automático</option>
+                    <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                    <option value="Efectivo / Pago Fácil">Efectivo / Pago Fácil</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Observaciones</label>
+            <textarea id="observaciones" placeholder="Información adicional relevante..."></textarea>
+        </div>
+
+        <button type="button" class="btn-submit" onclick="obtenerUbicacionYEnviar()">Enviar Solicitud Segura</button>
     </div>
 
-    <div id="successScreen" class="success-screen">
-        <h2 style="color: var(--green);">¡Solicitud Enviada!</h2>
-        <p style="margin-top: 10px; color: var(--gray600);">Los datos han sido registrados en Google Sheets.</p>
-        <button onclick="location.reload()" style="margin-top: 20px; padding: 10px; border: none; background: var(--navy); color: white; border-radius: 8px;">Nueva Solicitud</button>
+    <div id="successScreen">
+        <h2 style="color: var(--accent);">¡Solicitud Enviada con Éxito!</h2>
+        <p>Toda la información, incluida la trazabilidad y geolocalización, ha sido registrada.</p>
+        <button onclick="location.reload()" style="margin-top:20px; padding:10px; cursor:pointer;">Cargar otra solicitud</button>
     </div>
 </div>
 
 <script>
-    function submitForm() {
+    // Variable para guardar la ubicación
+    let geoLocalizacion = "No permitida por el usuario";
+
+    // Intentar obtener la ubicación apenas carga la página
+    window.onload = function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                geoLocalizacion = position.coords.latitude + ", " + position.coords.longitude;
+            });
+        }
+    };
+
+    function obtenerUbicacionYEnviar() {
         const btn = document.querySelector('.btn-submit');
-        btn.textContent = 'Enviando...';
+        btn.textContent = 'Enviando Datos...';
         btn.disabled = true;
 
         const formData = new URLSearchParams();
+        
+        // Mapeo de campos para tu Sheets
         formData.append('dni', document.getElementById('dni').value);
         formData.append('apellido', document.getElementById('apellido').value);
         formData.append('nombre', document.getElementById('nombre').value);
@@ -106,7 +132,17 @@
         formData.append('codigo_postal', document.getElementById('cp').value);
         formData.append('celular', document.getElementById('celular').value);
         formData.append('mail', document.getElementById('email').value);
+        formData.append('grupo_familiar', document.getElementById('grupoFamiliar').value);
+        formData.append('obra_social', document.getElementById('obraSocial').value);
+        formData.append('alergia', document.getElementById('alergia').value);
+        formData.append('enfermedad_cronica', document.getElementById('enfermedadCronica').value);
         formData.append('plan', document.getElementById('plan').value);
+        formData.append('modalidad_pago', document.getElementById('pago').value);
+        formData.append('observaciones', document.getElementById('observaciones').value);
+        
+        // Trazabilidad y Geolocalización
+        formData.append('trazabilidad', geoLocalizacion);
+        formData.append('fecha_envio', new Date().toLocaleString());
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyRD80bHzltVeqp8k17tacqqVcB4E1MOG9da6jxUf8/exec';
 
@@ -117,12 +153,12 @@
         })
         .then(() => {
             document.getElementById('formContent').style.display = 'none';
-            document.getElementById('successScreen').classList.add('show');
+            document.getElementById('successScreen').style.display = 'block';
         })
         .catch(error => {
-            alert('Error al enviar');
+            alert('Error al conectar con el servidor.');
             btn.disabled = false;
-            btn.textContent = 'Enviar a ZOHO CRM ⚡';
+            btn.textContent = 'Enviar Solicitud Segura';
         });
     }
 </script>
