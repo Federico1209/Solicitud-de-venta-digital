@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Afiliación - Previnca Salud</title>
+    <style>
+        /* Mantén aquí tus estilos de Previnca (colores rojo/azul, fuentes, etc.) */
+        :root { --red: #e30613; --blue: #005495; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f4f7f9; }
+        /* ... (tus otros estilos) ... */
+    </style>
+</head>
+<body>
+
+    <div id="step1">
+        <input type="text" id="dni" placeholder="DNI">
+        <input type="text" id="apellido" placeholder="Apellido">
+        <input type="text" id="nombre" placeholder="Nombre">
+        <button type="button" onclick="submitForm()" class="btn-submit">Enviar a ZOHO CRM ⚡</button>
+    </div>
+
+    <div id="successScreen" style="display:none;">
+        <h2>¡Solicitud Enviada!</h2>
+        <p>ID: <span id="successID"></span></p>
+    </div>
+
+    <script>
+        // Generamos un ID automático para la venta
+        const solicitudID = "SOL-" + Math.floor(Math.random() * 1000000);
+
+        function submitForm() {
+            const btn = document.querySelector('.btn-submit');
+            btn.innerHTML = 'Enviando...';
+            btn.disabled = true;
+
+            const formData = new URLSearchParams();
+            // Recolección de datos
+            formData.append('dni', document.getElementById('dni')?.value || '');
+            formData.append('apellido', document.getElementById('apellido')?.value || '');
+            formData.append('nombre', document.getElementById('nombre')?.value || '');
+            formData.append('observaciones', 'ID: ' + solicitudID);
+
+            // Tu URL de Google Sheets
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyRD80bHzltVeqp8k17tacqqVcB4E1MOG9da6jxUf8/exec';
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            })
+            .then(() => {
+                alert('¡Datos guardados en Google Sheets!');
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('successScreen').style.display = 'block';
+                document.getElementById('successID').textContent = solicitudID;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al enviar.');
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
