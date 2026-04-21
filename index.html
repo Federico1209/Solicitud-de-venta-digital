@@ -2,102 +2,98 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Previnca Salud - Solicitud Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Solicitud de Afiliación · Previnca Salud</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #004a99; --secondary: #00a1e4; --bg: #f4f7f9; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
-        h1 { color: var(--primary); text-align: center; font-size: 22px; }
-        .section-title { border-bottom: 2px solid var(--bg); margin: 20px 0 10px; padding-bottom: 5px; font-weight: bold; color: #555; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 14px; color: #333; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .btn-submit:hover { background: var(--secondary); }
-        #successScreen { display: none; text-align: center; }
+        :root {
+            --navy: #1B3A6B; --blue: #2563EB; --lblue: #EFF6FF; --teal: #0F766E;
+            --lteal: #F0FDFA; --orange: #EA580C; --lorg: #FFF7ED; --green: #15803D;
+            --lgreen: #F0FDF4; --red: #DC2626; --lred: #FEF2F2; --white: #FFFFFF;
+            --gray50: #F8FAFC; --gray100: #F1F5F9; --gray200: #E2E8F0; --gray400: #94A3B8;
+            --gray600: #475569; --gray800: #1E293B; --radius: 14px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'DM Sans', sans-serif; background: linear-gradient(160deg, #0F2557 0%, #1B3A6B 45%, #0F4C81 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-bottom: 40px; }
+        .app-header { width: 100%; max-width: 480px; padding: 28px 24px 0; display: flex; align-items: center; justify-content: space-between; }
+        .logo-area { display: flex; align-items: center; gap: 10px; color: white; }
+        .card { width: 100%; max-width: 480px; background: var(--white); border-radius: 24px; margin-top: 24px; padding: 28px 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.16); }
+        .field { margin-bottom: 18px; }
+        label { display: block; font-size: 12px; font-weight: 600; color: var(--gray600); margin-bottom: 6px; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 13px; border: 1.5px solid var(--gray200); border-radius: var(--radius); background: var(--gray50); outline: none; }
+        .btn-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--teal), var(--green)); color: white; border: none; border-radius: var(--radius); font-weight: 700; cursor: pointer; margin-top: 20px; }
+        .success-screen { display: none; text-align: center; }
+        .success-screen.show { display: block; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<header class="app-header">
+    <div class="logo-area"><strong>Previnca Salud</strong></div>
+</header>
+
+<div class="card">
     <div id="formContent">
-        <h1>Solicitud de Afiliación Previnca</h1>
+        <h2 style="margin-bottom: 20px; color: var(--navy);">Datos del Titular</h2>
         
-        <div class="section-title">Datos Personales</div>
-        <div class="form-group">
+        <div class="field">
             <label>DNI</label>
             <input type="number" id="dni" required>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <div class="form-group" style="flex: 1;">
-                <label>Apellido</label>
-                <input type="text" id="apellido" required>
-            </div>
-            <div class="form-group" style="flex: 1;">
-                <label>Nombre</label>
-                <input type="text" id="nombre" required>
-            </div>
+        <div class="field">
+            <label>Apellido</label>
+            <input type="text" id="apellido" required>
         </div>
-        <div class="form-group">
+        <div class="field">
+            <label>Nombre</label>
+            <input type="text" id="nombre" required>
+        </div>
+        <div class="field">
             <label>Fecha de Nacimiento</label>
-            <input type="date" id="fechaNac">
+            <input type="date" id="fechaNac" required>
         </div>
-
-        <div class="section-title">Contacto y Domicilio</div>
-        <div class="form-group">
+        <div class="field">
             <label>Domicilio</label>
-            <input type="text" id="domicilio">
+            <input type="text" id="domicilio" required>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <div class="form-group" style="flex: 2;">
-                <label>Localidad</label>
-                <input type="text" id="localidad">
-            </div>
-            <div class="form-group" style="flex: 1;">
-                <label>Cód. Postal</label>
-                <input type="text" id="cp">
-            </div>
+        <div class="field">
+            <label>Localidad</label>
+            <input type="text" id="localidad" required>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <div class="form-group" style="flex: 1;">
-                <label>Celular</label>
-                <input type="tel" id="celular">
-            </div>
-            <div class="form-group" style="flex: 1;">
-                <label>Email</label>
-                <input type="email" id="email">
-            </div>
+        <div class="field">
+            <label>Código Postal</label>
+            <input type="number" id="cp" required>
         </div>
-
-        <div class="section-title">Plan y Cobertura</div>
-        <div class="form-group">
-            <label>Obra Social Actual</label>
-            <input type="text" id="obraSocial" placeholder="Si no tiene, poner 'Ninguna'">
+        <div class="field">
+            <label>Celular</label>
+            <input type="tel" id="celular" required>
         </div>
-        <div class="form-group">
-            <label>Plan a contratar</label>
+        <div class="field">
+            <label>Email</label>
+            <input type="email" id="email">
+        </div>
+        <div class="field">
+            <label>Plan</label>
             <select id="plan">
-                <option value="Plan Global">Plan Global</option>
-                <option value="Plan Vital">Plan Vital</option>
-                <option value="Plan Integral">Plan Integral</option>
+                <option value="Individual A">Individual A</option>
+                <option value="Familiar A">Familiar A</option>
             </select>
         </div>
 
-        <button type="button" class="btn-submit" onclick="submitForm()">Enviar a ZOHO CRM +</button>
+        <button type="button" class="btn-submit" onclick="submitForm()">Enviar a ZOHO CRM ⚡</button>
     </div>
 
-    <div id="successScreen">
-        <h2 style="color: #28a745;">¡Solicitud Enviada con Éxito!</h2>
-        <p>Los datos han sido registrados en el sistema.</p>
-        <button onclick="location.reload()" style="background: none; border: 1px solid #ccc; padding: 10px; cursor: pointer;">Enviar otra respuesta</button>
+    <div id="successScreen" class="success-screen">
+        <h2 style="color: var(--green);">¡Solicitud Enviada!</h2>
+        <p style="margin-top: 10px; color: var(--gray600);">Los datos han sido registrados en Google Sheets.</p>
+        <button onclick="location.reload()" style="margin-top: 20px; padding: 10px; border: none; background: var(--navy); color: white; border-radius: 8px;">Nueva Solicitud</button>
     </div>
 </div>
 
 <script>
     function submitForm() {
         const btn = document.querySelector('.btn-submit');
-        btn.textContent = 'Procesando...';
+        btn.textContent = 'Enviando...';
         btn.disabled = true;
 
         const formData = new URLSearchParams();
@@ -110,10 +106,8 @@
         formData.append('codigo_postal', document.getElementById('cp').value);
         formData.append('celular', document.getElementById('celular').value);
         formData.append('mail', document.getElementById('email').value);
-        formData.append('obra_social', document.getElementById('obraSocial').value);
         formData.append('plan', document.getElementById('plan').value);
 
-        // Tu URL de Google Apps Script
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyRD80bHzltVeqp8k17tacqqVcB4E1MOG9da6jxUf8/exec';
 
         fetch(scriptURL, {
@@ -123,13 +117,12 @@
         })
         .then(() => {
             document.getElementById('formContent').style.display = 'none';
-            document.getElementById('successScreen').style.display = 'block';
+            document.getElementById('successScreen').classList.add('show');
         })
         .catch(error => {
-            console.error('Error!', error);
-            alert('Error al enviar. Revisa tu conexión.');
+            alert('Error al enviar');
             btn.disabled = false;
-            btn.textContent = 'Enviar a ZOHO CRM +';
+            btn.textContent = 'Enviar a ZOHO CRM ⚡';
         });
     }
 </script>
