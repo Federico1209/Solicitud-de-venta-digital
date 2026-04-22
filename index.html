@@ -66,7 +66,7 @@
             </select>
             <div id="divAlergia" class="hidden-div">
                 <label>Tipo de Alergia</label>
-                <input type="text" id="tipoAlergia" placeholder="Ej: Penicilina, polen...">
+                <input type="text" id="tipoAlergia" placeholder="Ej: Penicilina...">
             </div>
         </div>
 
@@ -77,7 +77,7 @@
             </select>
             <div id="divCronica" class="hidden-div">
                 <label>Detalle Enfermedad</label>
-                <input type="text" id="tipoCronica" placeholder="Ej: Diabetes, Hipertensión...">
+                <input type="text" id="tipoCronica" placeholder="Ej: Diabetes...">
             </div>
         </div>
 
@@ -105,18 +105,13 @@
     </div>
 
     <div id="successScreen">
-        <h2 style="color: var(--accent);">¡Enviado con Éxito!</h2>
-        <p>Los datos se han registrado correctamente.</p>
+        <h2 style="color: var(--accent);">¡Solicitud Enviada con Éxito!</h2>
+        <p>Los datos han sido registrados en la base de datos.</p>
         <button onclick="location.reload()" style="margin-top:20px; padding:10px; cursor:pointer;">Volver a Empezar</button>
     </div>
 </div>
 
 <script>
-    let miUbicacion = "No permitida";
-    navigator.geolocation.getCurrentPosition(p => {
-        miUbicacion = p.coords.latitude + "," + p.coords.longitude;
-    }, () => { console.log("Ubicación denegada"); });
-
     async function enviar() {
         const btn = document.querySelector('.btn-submit');
         btn.textContent = 'Enviando...';
@@ -137,23 +132,21 @@
         formData.append('enfermedad_cronica', document.getElementById('tieneCronica').value === 'Si' ? document.getElementById('tipoCronica').value : 'Ninguna');
         formData.append('plan', document.getElementById('plan').value);
         formData.append('modalidad_pago', document.getElementById('pago').value);
-        formData.append('trazabilidad', miUbicacion);
         formData.append('fecha_envio', new Date().toLocaleString());
 
-        const URL_SCRIPT = https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec;
+        // TU URL DE GOOGLE APPS SCRIPT
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyRD80bHzltVeqp8k17tacqqVcB4E1MOG9da6jxUf8/exec';
 
         try {
-            await fetch(URL_SCRIPT, {
+            await fetch(scriptURL, {
                 method: 'POST',
-                mode: 'no-cors', 
+                mode: 'no-cors',
                 body: formData
             });
-
             document.getElementById('formContent').style.display = 'none';
             document.getElementById('successScreen').style.display = 'block';
-            window.scrollTo(0,0);
         } catch (err) {
-            alert("Error de red o de URL: " + err.message);
+            alert("Error: " + err.message);
             btn.disabled = false;
             btn.textContent = 'Enviar Solicitud Profesional';
         }
