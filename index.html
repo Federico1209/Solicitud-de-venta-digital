@@ -151,7 +151,7 @@
         formData.append('pago', document.getElementById('pago').value);
         formData.append('fecha_envio', new Date().toLocaleString());
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
 
         try {
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
