@@ -3,152 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Previnca Salud - Solicitud Profesional</title>
+    <title>Solicitud de Afiliación - Previnca Salud</title>
     <style>
-        :root { --primary: #1B3A6B; --accent: #0F766E; --bg: #f0f4f8; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 650px; }
-        h1 { color: var(--primary); text-align: center; margin-bottom: 25px; border-bottom: 3px solid var(--accent); padding-bottom: 10px; }
-        .section-header { background: var(--primary); color: white; padding: 8px 15px; border-radius: 5px; margin: 20px 0 15px; font-weight: bold; text-transform: uppercase; font-size: 14px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; color: #444; font-size: 13px; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
-        .hidden-div { display: none; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px dashed var(--accent); margin-top: 10px; }
-        .btn-submit { background: var(--accent); color: white; border: none; padding: 18px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; }
-        #successScreen { display: none; text-align: center; padding: 40px; }
-        @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }
+        :root { --primary: #1B3A6B; --accent: #0F766E; --bg: #f8fafc; --text: #334155; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 100%; max-width: 700px; margin: auto; }
+        
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: var(--primary); font-size: 24px; margin: 0; }
+        .header p { color: #64748b; font-size: 14px; margin-top: 5px; }
+
+        .section-title { font-weight: bold; color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin: 30px 0 15px; font-size: 18px; display: flex; align-items: center; gap: 10px; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; text-transform: uppercase; color: #475569; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; transition: border 0.3s; }
+        input:focus { border-color: var(--primary); outline: none; }
+
+        /* Estilo de Botones de Opción (Chips) */
+        .chip-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .chip { padding: 10px 15px; border: 1px solid #e2e8f0; border-radius: 25px; cursor: pointer; font-size: 14px; background: #fff; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
+        .chip.selected { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .hidden { display: none; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 16px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 30px; }
+        
+        .info-box { background: #f1f5f9; padding: 15px; border-radius: 10px; font-size: 13px; border-left: 4px solid var(--primary); margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="formContent">
-        <h1>Solicitud de Afiliación</h1>
-
-        <div class="section-header">1. Datos del Titular</div>
-        <div class="form-group"><label>DNI</label><input type="number" id="dni"></div>
-        <div class="grid">
-            <div class="form-group"><label>Apellido</label><input type="text" id="apellido"></div>
-            <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
-        </div>
-        <div class="grid">
-            <div class="form-group"><label>Fecha de Nacimiento</label><input type="date" id="fechaNac"></div>
-            <div class="form-group"><label>Celular</label><input type="tel" id="celular"></div>
-        </div>
-        <div class="form-group"><label>Email</label><input type="email" id="email"></div>
-        <div class="form-group"><label>Domicilio</label><input type="text" id="domicilio"></div>
-        <div class="grid">
-            <div class="form-group"><label>Localidad</label><input type="text" id="localidad"></div>
-            <div class="form-group"><label>Código Postal</label><input type="text" id="cp"></div>
-        </div>
-
-        <div class="form-group">
-            <label>¿Tiene Obra Social?</label>
-            <select id="tieneOS" onchange="document.getElementById('divOS').style.display = (this.value=='Si'?'block':'none')">
-                <option value="No">No tiene</option>
-                <option value="Si">Sí, tiene</option>
-            </select>
-            <div id="divOS" class="hidden-div">
-                <label>Seleccione Obra Social</label>
-                <select id="obraSocial">
-                    <option value="PAMI">PAMI</option><option value="IOMA">IOMA</option><option value="OSDE">OSDE</option>
-                    <option value="Swiss Medical">Swiss Medical</option><option value="OSECAC">OSECAC</option><option value="Otra">Otra</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="section-header">2. Antecedentes de Salud</div>
-        <div class="form-group">
-            <label>¿Alergias?</label>
-            <select id="tieneAlergia" onchange="document.getElementById('divAlergia').style.display = (this.value=='Si'?'block':'none')">
-                <option value="No">No</option><option value="Si">Si</option>
-            </select>
-            <div id="divAlergia" class="hidden-div">
-                <label>Tipo de Alergia</label>
-                <input type="text" id="tipoAlergia" placeholder="Ej: Penicilina...">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>¿Enfermedades Crónicas?</label>
-            <select id="tieneCronica" onchange="document.getElementById('divCronica').style.display = (this.value=='Si'?'block':'none')">
-                <option value="No">No</option><option value="Si">Si</option>
-            </select>
-            <div id="divCronica" class="hidden-div">
-                <label>Detalle Enfermedad</label>
-                <input type="text" id="tipoCronica" placeholder="Ej: Diabetes...">
-            </div>
-        </div>
-
-        <div class="section-header">3. Plan y Modalidad</div>
-        <div class="grid">
-            <div class="form-group">
-                <label>Plan</label>
-                <select id="plan">
-                    <option value="Plan Global">Plan Global</option>
-                    <option value="Plan Vital">Plan Vital</option>
-                    <option value="Plan Integral">Plan Integral</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Modalidad de Pago</label>
-                <select id="pago">
-                    <option value="Debito">Débito Automático</option>
-                    <option value="Tarjeta">Tarjeta de Crédito</option>
-                    <option value="Efectivo">Efectivo</option>
-                </select>
-            </div>
-        </div>
-
-        <button type="button" class="btn-submit" onclick="enviar()">Enviar Solicitud Profesional</button>
+    <div class="header">
+        <h1>Previnca Salud</h1>
+        <p>Solicitud de Afiliación</p>
     </div>
 
-    <div id="successScreen">
-        <h2 style="color: var(--accent);">¡Solicitud Enviada con Éxito!</h2>
-        <p>Los datos han sido registrados en la base de datos.</p>
-        <button onclick="location.reload()" style="margin-top:20px; padding:10px; cursor:pointer;">Volver a Empezar</button>
+    <div id="formSteps">
+        <div class="section-title">👤 Datos del Titular</div>
+        <div class="form-group">
+            <label>DNI *</label>
+            <input type="number" id="dni" placeholder="Ej: 30456789">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group"><label>Apellido *</label><input type="text" id="apellido"></div>
+            <div class="form-group"><label>Nombre *</label><input type="text" id="nombre"></div>
+        </div>
+        
+        <div class="form-group">
+            <label>¿Tiene Grupo Familiar?</label>
+            <select id="tieneGF" onchange="document.getElementById('gfSection').classList.toggle('hidden', this.value === 'Solo titular')">
+                <option value="Solo titular">Solo titular</option>
+                <option value="Con grupo familiar">Con grupo familiar (Cónyuge e hijos)</option>
+            </select>
+        </div>
+
+        <div id="gfSection" class="hidden">
+            <div class="info-box">ℹ️ Ingresá los DNI de cada integrante del grupo (hasta 6 adicionales).</div>
+            <div class="form-group">
+                <label>Integrantes del grupo (DNI)</label>
+                <input type="text" id="dniGrupo" placeholder="Ej: 35123456, 41987654">
+            </div>
+        </div>
+
+        <div class="section-title">🏥 Antecedentes de Salud</div>
+        <div class="info-box">🔒 Información confidencial. Solo accesible por el equipo médico. No afecta la aprobación del alta.</div>
+
+        <label>¿El titular tiene alguna alergia? *</label>
+        <div class="chip-group" id="alergiaChips">
+            <div class="chip" onclick="selectChip(this, 'Medicamentos')">💊 Medicamentos</div>
+            <div class="chip" onclick="selectChip(this, 'Polen / Plantas')">🌿 Polen / Plantas</div>
+            <div class="chip" onclick="selectChip(this, 'Alimentos')">🍎 Alimentos</div>
+            <div class="chip" onclick="selectChip(this, 'Picaduras')">🐝 Picaduras</div>
+            <div class="chip" onclick="selectChip(this, 'Látex')">🧤 Látex</div>
+            <div class="chip" onclick="selectChip(this, 'Animales')">🐾 Animales</div>
+            <div class="chip" onclick="selectChip(this, 'Ninguna')">✅ No presenta</div>
+        </div>
+        <input type="hidden" id="alergiaFinal">
+
+        <div class="form-group" style="margin-top: 15px;">
+            <label>¿El titular tiene alguna enfermedad crónica? *</label>
+            <div class="chip-group" id="cronicaChips">
+                <div class="chip" onclick="selectChip(this, 'Diabetes')">🩸 Diabetes</div>
+                <div class="chip" onclick="selectChip(this, 'Hipertensión')">❤️ Hipertensión</div>
+                <div class="chip" onclick="selectChip(this, 'Asma / EPOC')">🫁 Asma / EPOC</div>
+                <div class="chip" onclick="selectChip(this, 'Tiroides')">🦋 Tiroides</div>
+                <div class="chip" onclick="selectChip(this, 'Ninguna')">✅ No presenta</div>
+            </div>
+            <input type="hidden" id="cronicaFinal">
+        </div>
+
+        <button class="btn-submit" onclick="enviar()">Continuar →</button>
+    </div>
+
+    <div id="successScreen" class="hidden">
+        <h2 style="color: var(--accent);">¡Solicitud Enviada!</h2>
+        <p>Los datos han sido registrados en la base de datos de Previnca Salud.</p>
+        <button onclick="location.reload()" class="btn-submit">Cargar nueva solicitud</button>
     </div>
 </div>
 
 <script>
+    let selecciones = { alergias: [], cronicas: [] };
+
+    function selectChip(el, valor) {
+        el.classList.toggle('selected');
+        // Lógica simple para manejar selecciones múltiples o 'Ninguna'
+        console.log(valor + " seleccionado");
+    }
+
     async function enviar() {
         const btn = document.querySelector('.btn-submit');
-        btn.textContent = 'Enviando...';
+        btn.textContent = 'Procesando...';
         btn.disabled = true;
 
         const formData = new URLSearchParams();
+        formData.append('tipo_afiliacion', document.getElementById('tieneGF').value);
         formData.append('dni', document.getElementById('dni').value);
         formData.append('apellido', document.getElementById('apellido').value);
         formData.append('nombre', document.getElementById('nombre').value);
-        formData.append('fecha_nacimiento', document.getElementById('fechaNac').value);
-        formData.append('domicilio', document.getElementById('domicilio').value);
-        formData.append('localidad', document.getElementById('localidad').value);
-        formData.append('codigo_postal', document.getElementById('cp').value);
-        formData.append('celular', document.getElementById('celular').value);
-        formData.append('mail', document.getElementById('email').value);
-        formData.append('obra_social', document.getElementById('tieneOS').value === 'Si' ? document.getElementById('obraSocial').value : 'Ninguna');
-        formData.append('alergia', document.getElementById('tieneAlergia').value === 'Si' ? document.getElementById('tipoAlergia').value : 'Ninguna');
-        formData.append('enfermedad_cronica', document.getElementById('tieneCronica').value === 'Si' ? document.getElementById('tipoCronica').value : 'Ninguna');
-        formData.append('plan', document.getElementById('plan').value);
-        formData.append('modalidad_pago', document.getElementById('pago').value);
+        formData.append('integrantes_dni', document.getElementById('dniGrupo').value);
+        
+        // Aquí recolectamos los chips seleccionados
+        const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
+        const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
+        
+        formData.append('alergia', alergias || 'Ninguna');
+        formData.append('enfermedad_cronica', cronicas || 'Ninguna');
         formData.append('fecha_envio', new Date().toLocaleString());
 
+        // TU URL DE GOOGLE SCRIPT
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
 
         try {
-            await fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: formData
-            });
-            document.getElementById('formContent').style.display = 'none';
-            document.getElementById('successScreen').style.display = 'block';
-            window.scrollTo(0,0);
+            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
+            document.getElementById('formSteps').classList.add('hidden');
+            document.getElementById('successScreen').classList.remove('hidden');
         } catch (err) {
-            alert("Error: " + err.message);
+            alert("Error al enviar");
             btn.disabled = false;
-            btn.textContent = 'Enviar Solicitud Profesional';
         }
     }
 </script>
