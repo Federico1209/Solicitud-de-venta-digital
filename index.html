@@ -134,8 +134,8 @@
         formData.append('modalidad_pago', document.getElementById('pago').value);
         formData.append('fecha_envio', new Date().toLocaleString());
 
-        // TU URL DE GOOGLE APPS SCRIPT
-        const scriptURL = https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
+        // URL CORREGIDA (Con comillas correctas)
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
 
         try {
             await fetch(scriptURL, {
@@ -145,6 +145,7 @@
             });
             document.getElementById('formContent').style.display = 'none';
             document.getElementById('successScreen').style.display = 'block';
+            window.scrollTo(0,0);
         } catch (err) {
             alert("Error: " + err.message);
             btn.disabled = false;
