@@ -184,7 +184,7 @@
         formData.append('fecha_envio', new Date().toLocaleString());
 
         // Asegúrate de usar tu URL de Apps Script aquí
-        const scriptURL = 'TU_URL_DE_APPS_SCRIPT'; 
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec'; 
 
         try {
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
