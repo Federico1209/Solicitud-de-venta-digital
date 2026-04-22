@@ -256,4 +256,25 @@
         formData.append('mail', document.getElementById('email').value);
         formData.append('obra_social', document.getElementById('obraSocial').value);
         formData.append('alergia', alergias || 'Ninguna');
-        formData.append('enfermedad_cronica', cronicas || '
+        formData.append('enfermedad_cronica', cronicas || 'Ninguna');
+        formData.append('plan', document.getElementById('plan').value);
+        formData.append('pago', document.getElementById('pago').value);
+        formData.append('fecha_envio', new Date().toLocaleString());
+
+        // PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
+
+        try {
+            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
+            document.getElementById('mainForm').classList.add('hidden');
+            document.getElementById('success').classList.remove('hidden');
+            window.scrollTo(0,0);
+        } catch (e) {
+            alert("Error al enviar. Intente de nuevo.");
+            btn.disabled = false;
+            btn.textContent = 'Enviar Solicitud Final';
+        }
+    }
+</script>
+</body>
+</html>
