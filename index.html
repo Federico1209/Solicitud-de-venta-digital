@@ -1,200 +1,35 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitud Digital - Previnca Salud</title>
-    <style>
-        :root { --primary-blue: #004581; --accent-green: #28a745; --text-white: #ffffff; --bg-body: #e9ecef; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-body); margin: 0; padding: 20px; }
-        .container { background: white; max-width: 650px; margin: auto; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .header { text-align: center; padding: 25px; background: white; }
-        .header h1 { color: var(--primary-blue); margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 1px; }
-        .header p { color: #666; font-weight: 600; margin: 5px 0 0; }
-        .bloque-azul { background-color: var(--primary-blue); color: var(--text-white); padding: 25px; margin: 15px; border-radius: 12px; }
-        .bloque-titulo { font-size: 16px; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; opacity: 0.9; }
-        input, select { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 15px; box-sizing: border-box; background: white; color: #333; }
-        .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .chip { padding: 8px 15px; border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; cursor: pointer; font-size: 13px; background: rgba(255,255,255,0.1); transition: 0.3s; }
-        .chip.selected { background: var(--accent-green); border-color: var(--accent-green); font-weight: bold; }
-        .input-extra { margin-top: 10px; display: none; background: #fff; color: #333; }
-        .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 20px; width: calc(100% - 30px); margin: 0 15px 20px 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        .btn-verde:hover { background-color: #218838; transform: translateY(-2px); }
-        .hidden { display: none; }
-        @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }
-    </style>
-</head>
-<body>
+function doPost(e) {
+  // Reemplaza con el ID de tu hoja si es necesario
+  const sheetId = '1iTfSZ0fTgGs-Do6wkkUHc1ajFISqCBya1FnQp98_9-8'; 
+  const ss = SpreadsheetApp.openById(sheetId);
+  const sheet = ss.getSheets()[0]; 
 
-<div class="container">
-    <div class="header">
-        <h1>PREVINCA SALUD</h1>
-        <p>Solicitud de Afiliación Digital</p>
-    </div>
+  try {
+    const p = e.parameter;
+    
+    // El orden de estas columnas DEBE coincidir con tu Excel (A hasta Q)
+    sheet.appendRow([
+      p.id_vendedor,        // Columna A
+      p.tipo_afiliacion,    // Columna B
+      p.dni,                // Columna C
+      p.apellido,           // Columna D
+      p.nombre,             // Columna E
+      p.fecha_nacimiento,   // Columna F
+      p.domicilio,          // Columna G
+      p.localidad,          // Columna H
+      p.cp,                 // Columna I
+      p.celular,            // Columna J
+      p.mail,               // Columna K
+      p.obra_social,        // Columna L
+      p.alergia,            // Columna M
+      p.enfermedad_cronica, // Columna N
+      p.plan,               // Columna O
+      p.pago,               // Columna P
+      p.fecha_envio         // Columna Q
+    ]);
 
-    <div id="mainForm">
-        <div class="bloque-azul">
-            <div class="bloque-titulo">1. Datos Personales</div>
-            <div class="form-group">
-                <label>ID Vendedor / Promotor *</label>
-                <input type="text" id="idVendedor" placeholder="Su código de vendedor">
-            </div>
-            <div class="form-group">
-                <label>Tipo de Afiliación</label>
-                <select id="tipoAfiliacion">
-                    <option value="Solo Titular">Solo Titular</option>
-                    <option value="Grupo Familiar">Grupo Familiar</option>
-                </select>
-            </div>
-            <div class="grid">
-                <div class="form-group"><label>DNI</label><input type="number" id="dni"></div>
-                <div class="form-group"><label>Fecha Nacimiento</label><input type="date" id="fechaNac"></div>
-            </div>
-            <div class="grid">
-                <div class="form-group"><label>Apellido</label><input type="text" id="apellido"></div>
-                <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
-            </div>
-            <div class="form-group"><label>Dirección (Domicilio)</label><input type="text" id="domicilio"></div>
-            <div class="grid">
-                <div class="form-group"><label>Localidad</label><input type="text" id="localidad"></div>
-                <div class="form-group"><label>Cód. Postal</label><input type="text" id="cp"></div>
-            </div>
-            <div class="grid">
-                <div class="form-group"><label>Celular</label><input type="tel" id="celular"></div>
-                <div class="form-group"><label>Email</label><input type="email" id="email"></div>
-            </div>
-            <div class="form-group">
-                <label>Obra Social</label>
-                <select id="obraSocial">
-                    <option value="Particular (No tiene)">Particular (No tiene)</option>
-                    <option value="PAMI">PAMI</option>
-                    <option value="IOMA">IOMA</option>
-                    <option value="OSDE">OSDE</option>
-                    <option value="Swiss Medical">Swiss Medical</option>
-                    <option value="OSECAC">OSECAC</option>
-                    <option value="Otra">Otra Obra Social</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="bloque-azul">
-            <div class="bloque-titulo">2. Antecedentes de Salud</div>
-            <label>Alergias</label>
-            <div class="chip-group" id="alergiaChips">
-                <div class="chip" onclick="toggleChip(this, 'alergiaExtra')">Medicamentos</div>
-                <div class="chip" onclick="toggleChip(this, 'alergiaExtra')">Alimentos</div>
-                <div class="chip" onclick="toggleChip(this, 'alergiaExtra')">Picaduras</div>
-                <div class="chip" onclick="toggleChip(this, 'alergiaExtra')">Otra</div>
-                <div class="chip" onclick="toggleChip(this, 'alergiaExtra')">Ninguna</div>
-            </div>
-            <input type="text" id="alergiaExtra" class="input-extra" placeholder="¿A qué es alérgico?">
-
-            <label style="margin-top:20px; display:block;">Enfermedades Crónicas</label>
-            <div class="chip-group" id="cronicaChips">
-                <div class="chip" onclick="toggleChip(this, 'cronicaExtra')">Diabetes</div>
-                <div class="chip" onclick="toggleChip(this, 'cronicaExtra')">Hipertensión</div>
-                <div class="chip" onclick="toggleChip(this, 'cronicaExtra')">Asma</div>
-                <div class="chip" onclick="toggleChip(this, 'cronicaExtra')">Otra</div>
-                <div class="chip" onclick="toggleChip(this, 'cronicaExtra')">Ninguna</div>
-            </div>
-            <input type="text" id="cronicaExtra" class="input-extra" placeholder="Especifique enfermedad...">
-        </div>
-
-        <div class="bloque-azul">
-            <div class="bloque-titulo">3. Plan y Modalidad de Pago</div>
-            <div class="grid">
-                <div class="form-group">
-                    <label>Plan Elegido</label>
-                    <select id="plan">
-                        <option value="Plan Global">Plan Global</option>
-                        <option value="Plan Vital">Plan Vital</option>
-                        <option value="Plan Integral">Plan Integral</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Modalidad de Pago</label>
-                    <select id="pago">
-                        <option value="Débito Automático">Débito Automático</option>
-                        <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
-                        <option value="Efectivo">Efectivo / Rapipago</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <button class="btn-verde" onclick="enviar()">Enviar Solicitud Final</button>
-    </div>
-
-    <div id="success" class="hidden" style="text-align:center; padding:60px 20px; color:var(--primary-blue);">
-        <h2 style="font-size: 30px;">¡Enviado con Éxito!</h2>
-        <p>Gracias por elegir Previnca Salud. Su solicitud está siendo procesada.</p>
-        <button onclick="location.reload()" style="margin-top:20px; cursor:pointer; background:none; border:1px solid #ccc; padding:10px; border-radius:8px;">Cargar otra</button>
-    </div>
-</div>
-
-<script>
-    function toggleChip(el, extraId) {
-        if(el.innerText === 'Ninguna') {
-            Array.from(el.parentElement.children).forEach(c => c.classList.remove('selected'));
-            document.getElementById(extraId).style.display = 'none';
-        } else {
-            const ninguna = Array.from(el.parentElement.children).find(c => c.innerText === 'Ninguna');
-            if(ninguna) ninguna.classList.remove('selected');
-        }
-        el.classList.toggle('selected');
-        const chips = Array.from(el.parentElement.querySelectorAll('.chip.selected'));
-        const tieneOtra = chips.some(c => c.innerText === 'Otra');
-        document.getElementById(extraId).style.display = tieneOtra ? 'block' : 'none';
-    }
-
-    async function enviar() {
-        const btn = document.querySelector('.btn-verde');
-        btn.textContent = 'Enviando Datos...';
-        btn.disabled = true;
-
-        let alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
-        if(alergias.includes('Otra')) alergias += " (" + document.getElementById('alergiaExtra').value + ")";
-
-        let cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
-        if(cronicas.includes('Otra')) cronicas += " (" + document.getElementById('cronicaExtra').value + ")";
-
-        const formData = new URLSearchParams();
-        
-        // El orden aquí debe ser igual al del script.appendRow del Apps Script
-        formData.append('id_vendedor', document.getElementById('idVendedor').value);
-        formData.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value);
-        formData.append('dni', document.getElementById('dni').value);
-        formData.append('apellido', document.getElementById('apellido').value);
-        formData.append('nombre', document.getElementById('nombre').value);
-        formData.append('fecha_nacimiento', document.getElementById('fechaNac').value);
-        formData.append('domicilio', document.getElementById('domicilio').value);
-        formData.append('localidad', document.getElementById('localidad').value);
-        formData.append('cp', document.getElementById('cp').value);
-        formData.append('celular', document.getElementById('celular').value);
-        formData.append('mail', document.getElementById('email').value);
-        formData.append('obra_social', document.getElementById('obraSocial').value);
-        formData.append('alergia', alergias || 'Ninguna');
-        formData.append('enfermedad_cronica', cronicas || 'Ninguna');
-        formData.append('plan', document.getElementById('plan').value);
-        formData.append('pago', document.getElementById('pago').value);
-        formData.append('fecha_envio', new Date().toLocaleString());
-
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
-
-        try {
-            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
-            document.getElementById('mainForm').classList.add('hidden');
-            document.getElementById('success').classList.remove('hidden');
-            window.scrollTo(0,0);
-        } catch (e) {
-            alert("Error al enviar. Intente de nuevo.");
-            btn.disabled = false;
-            btn.textContent = 'Enviar Solicitud Final';
-        }
-    }
-</script>
-</body>
-</html>
+    return ContentService.createTextOutput("Éxito").setMimeType(ContentService.MimeType.TEXT);
+  } catch (error) {
+    return ContentService.createTextOutput("Error: " + error.message).setMimeType(ContentService.MimeType.TEXT);
+  }
+}
