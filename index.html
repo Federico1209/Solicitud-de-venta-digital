@@ -19,7 +19,7 @@
         label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; }
         input, select { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 15px; box-sizing: border-box; background: white; color: #333; }
         .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .chip { padding: 10px 18px; border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; cursor: pointer; font-size: 13px; background: rgba(255,255,255,0.1); transition: 0.3s; }
+        .chip { padding: 10px 18px; border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; cursor: pointer; font-size: 13px; background: rgba(255,255,255,0.1); transition: 0.3s; user-select: none; }
         .chip.selected { background: var(--accent-green) !important; border-color: var(--accent-green) !important; color: white !important; font-weight: bold; }
         .input-extra { margin-top: 10px; display: none; background: #fff; color: #333; }
         .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 20px; width: calc(100% - 30px); margin: 0 15px 20px 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
@@ -40,7 +40,7 @@
             <div class="bloque-titulo">1. Datos Personales</div>
             <div class="form-group">
                 <label>ID Vendedor / Promotor *</label>
-                <input type="text" id="idVendedor" placeholder="Su código">
+                <input type="text" id="idVendedor" placeholder="Ingrese su código">
             </div>
             <div class="form-group">
                 <label>Tipo de Afiliación</label>
@@ -50,7 +50,7 @@
                 </select>
             </div>
             <div class="grid">
-                <div class="form-group"><label>DNI</label><input type="number" id="dni"></div>
+                <div class="form-group"><label>DNI</label><input type="number" id="dni" placeholder="DNI del titular"></div>
                 <div class="form-group"><label>Fecha Nacimiento</label><input type="date" id="fechaNac"></div>
             </div>
             <div class="grid">
@@ -58,7 +58,7 @@
                 <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
             </div>
             <div class="form-group">
-                <label>Dirección (📍 Haz clic para ubicar)</label>
+                <label>Dirección (📍 Clic para ubicar)</label>
                 <div style="display: flex; gap: 5px;">
                     <input type="text" id="domicilio" placeholder="Calle y número">
                     <button type="button" class="btn-geo" onclick="obtenerUbicacion()">📍</button>
@@ -74,7 +74,7 @@
             </div>
             <div class="form-group">
                 <label>Obra Social</label>
-                <input list="obras" id="obraSocial" placeholder="Busque su obra social...">
+                <input list="obras" id="obraSocial" placeholder="Escriba para buscar...">
                 <datalist id="obras">
                     <option value="Particular"><option value="PAMI"><option value="IOMA"><option value="OSDE"><option value="Swiss Medical">
                 </datalist>
@@ -84,17 +84,17 @@
         <div class="bloque-azul">
             <div class="bloque-titulo">2. Antecedentes de Salud</div>
             <div class="sub-punto">
-                <span class="sub-titulo">2.1 Tratamientos</span>
+                <span class="sub-titulo">2.1 Tratamientos Actuales</span>
                 <div class="form-group">
                     <label>¿Toma Medicación Diaria?</label>
-                    <select id="tomaMedicacion" onchange="mostrarExtra(this, 'medExtra')">
+                    <select id="tomaMedicacion" onchange="mostrarSi(this, 'medExtra')">
                         <option value="No">No</option><option value="Sí">Sí</option>
                     </select>
                     <input type="text" id="medExtra" class="input-extra" placeholder="¿Cuál medicación?">
                 </div>
                 <div class="form-group">
                     <label>¿Tuvo Internación o Cirugía?</label>
-                    <select id="tuvoInternacion" onchange="mostrarExtra(this, 'intExtra')">
+                    <select id="tuvoInternacion" onchange="mostrarSi(this, 'intExtra')">
                         <option value="No">No</option><option value="Sí">Sí</option>
                     </select>
                     <input type="text" id="intExtra" class="input-extra" placeholder="¿Cuándo y dónde?">
@@ -109,8 +109,7 @@
                     <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Otra</div>
                     <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Ninguna</div>
                 </div>
-                <input type="text" id="alergiaExtra" class="input-extra" placeholder="Especifique...">
-
+                <input type="text" id="alergiaExtra" class="input-extra" placeholder="Especifique alergia...">
                 <label style="margin-top:20px; display:block;">Enfermedades Crónicas</label>
                 <div class="chip-group" id="cronicaChips">
                     <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Diabetes</div>
@@ -118,7 +117,7 @@
                     <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Otra</div>
                     <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Ninguna</div>
                 </div>
-                <input type="text" id="cronicaExtra" class="input-extra" placeholder="Especifique...">
+                <input type="text" id="cronicaExtra" class="input-extra" placeholder="Especifique enfermedad...">
             </div>
         </div>
 
@@ -140,13 +139,13 @@
     </div>
 
     <div id="success" class="hidden" style="text-align:center; padding:60px 20px; color:var(--primary-blue);">
-        <h2>¡Solicitud Enviada!</h2>
+        <h2>¡Solicitud Enviada con Éxito!</h2>
         <button onclick="location.reload()" style="padding:10px; cursor:pointer;">Nueva Solicitud</button>
     </div>
 </div>
 
 <script>
-    function mostrarExtra(select, id) { document.getElementById(id).style.display = (select.value === 'Sí' ? 'block' : 'none'); }
+    function mostrarSi(select, id) { document.getElementById(id).style.display = (select.value === 'Sí' ? 'block' : 'none'); }
 
     function manejarChip(el, extraId) {
         if (el.innerText === 'Ninguna') {
@@ -181,12 +180,14 @@
         const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
 
         const formData = new URLSearchParams();
-        // VÍNCULOS EN ORDEN A, B, C...
-        formData.append('id_vendedor', document.getElementById('idVendedor').value);
-        formData.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value);
-        formData.append('dni', document.getElementById('dni').value);
-        formData.append('apellido', document.getElementById('apellido').value);
-        formData.append('nombre', document.getElementById('nombre').value);
+        
+        // --- AQUÍ ESTÁ EL VÍNCULO ESTRICTO CON LAS COLUMNAS A, B y C ---
+        formData.append('id_vendedor', document.getElementById('idVendedor').value);      // Columna A
+        formData.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value); // Columna B
+        formData.append('dni', document.getElementById('dni').value);                      // Columna C
+        
+        formData.append('apellido', document.getElementById('apellido').value);            // D
+        formData.append('nombre', document.getElementById('nombre').value);                // E
         formData.append('fecha_nacimiento', document.getElementById('fechaNac').value);
         formData.append('domicilio', document.getElementById('domicilio').value);
         formData.append('localidad', document.getElementById('localidad').value);
@@ -208,7 +209,10 @@
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
             document.getElementById('mainForm').classList.add('hidden');
             document.getElementById('success').classList.remove('hidden');
-        } catch (e) { alert("Error"); btn.disabled = false; btn.textContent = 'Enviar'; }
+            window.scrollTo(0,0);
+        } catch (e) {
+            alert("Error al enviar"); btn.disabled = false; btn.textContent = 'Enviar Solicitud Final';
+        }
     }
 </script>
 </body>
