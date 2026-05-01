@@ -1,234 +1,71 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitud Digital - Previnca Salud</title>
-    <style>
-        :root { --primary-blue: #004581; --accent-green: #28a745; --text-white: #ffffff; --bg-body: #e9ecef; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-body); margin: 0; padding: 20px; }
-        .container { background: white; max-width: 650px; margin: auto; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .header { text-align: center; padding: 25px; background: white; }
-        .header h1 { color: var(--primary-blue); margin: 0; font-size: 28px; text-transform: uppercase; }
-        .bloque-azul { background-color: var(--primary-blue); color: var(--text-white); padding: 25px; margin: 15px; border-radius: 12px; }
-        .bloque-titulo { font-size: 16px; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; }
-        .sub-punto { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.2); }
-        .sub-titulo { font-size: 13px; font-weight: bold; color: #ffcc00; display: block; margin-bottom: 10px; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; }
-        input, select { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 15px; box-sizing: border-box; background: white; color: #333; }
-        .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .chip { padding: 10px 18px; border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; cursor: pointer; font-size: 13px; background: rgba(255,255,255,0.1); transition: 0.3s; user-select: none; }
-        .chip.selected { background: var(--accent-green) !important; border-color: var(--accent-green) !important; color: white !important; font-weight: bold; }
-        .input-extra { margin-top: 10px; display: none; background: #fff; color: #333; }
-        .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 20px; width: calc(100% - 30px); margin: 0 15px 20px 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-geo { background: white; color: var(--primary-blue); border: none; border-radius: 8px; padding: 0 10px; cursor: pointer; font-size: 18px; height: 45px; }
-        .hidden { display: none; }
-    </style>
-</head>
-<body>
+async function enviarSolicitud() {
+    const btn = document.getElementById('btnEnviar');
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
 
-<div class="container">
-    <div class="header">
-        <h1>PREVINCA SALUD</h1>
-        <p>Solicitud de Afiliación Digital</p>
-    </div>
+    try {
+        // 1. Recopilamos los datos de los chips primero
+        const alergiasSeleccionadas = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
+        const cronicasSeleccionadas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
 
-    <div id="mainForm">
-        <div class="bloque-azul">
-            <div class="bloque-titulo">1. Datos Personales</div>
-            
-            <div class="form-group">
-                <label>ID Vendedor / Promotor *</label>
-                <input type="text" id="idVendedor" placeholder="Ingrese su código">
-            </div>
-
-            <div class="form-group">
-                <label>Tipo de Afiliación</label>
-                <select id="tipoAfiliacion">
-                    <option value="Solo Titular">Solo Titular</option>
-                    <option value="Grupo Familiar">Grupo Familiar</option>
-                </select>
-            </div>
-
-            <div class="grid">
-                <div class="form-group">
-                    <label>DNI</label>
-                    <input type="number" id="dniInput" placeholder="Sin puntos">
-                </div>
-                <div class="form-group">
-                    <label>Fecha Nacimiento</label>
-                    <input type="date" id="fechaNac">
-                </div>
-            </div>
-
-            <div class="grid">
-                <div class="form-group"><label>Apellido</label><input type="text" id="apellido"></div>
-                <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
-            </div>
-
-            <div class="form-group">
-                <label>Dirección (📍 Clic para ubicar)</label>
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="domicilio" placeholder="Calle y número">
-                    <button type="button" class="btn-geo" onclick="obtenerUbicacion()">📍</button>
-                </div>
-            </div>
-
-            <div class="grid">
-                <div class="form-group"><label>Localidad</label><input type="text" id="localidad"></div>
-                <div class="form-group"><label>C.P.</label><input type="text" id="cp"></div>
-            </div>
-
-            <div class="grid">
-                <div class="form-group"><label>Celular</label><input type="tel" id="celular"></div>
-                <div class="form-group"><label>Email</label><input type="email" id="email"></div>
-            </div>
-
-            <div class="form-group">
-                <label>Obra Social</label>
-                <input list="obras" id="obraSocial" placeholder="Escriba para buscar...">
-                <datalist id="obras">
-                    <option value="Particular"><option value="PAMI"><option value="IOMA"><option value="OSDE"><option value="Swiss Medical"><option value="OSECAC">
-                </datalist>
-            </div>
-        </div>
-
-        <div class="bloque-azul">
-            <div class="bloque-titulo">2. Antecedentes de Salud</div>
-            <div class="sub-punto">
-                <span class="sub-titulo">2.1 Tratamientos</span>
-                <div class="form-group">
-                    <label>¿Toma Medicación Diaria?</label>
-                    <select id="tomaMedicacion" onchange="document.getElementById('medExtra').style.display=(this.value=='Sí'?'block':'none')">
-                        <option value="No">No</option><option value="Sí">Sí</option>
-                    </select>
-                    <input type="text" id="medExtra" class="input-extra" placeholder="¿Qué medicación?">
-                </div>
-                <div class="form-group">
-                    <label>¿Tuvo Internación o Cirugía?</label>
-                    <select id="tuvoInternacion" onchange="document.getElementById('intExtra').style.display=(this.value=='Sí'?'block':'none')">
-                        <option value="No">No</option><option value="Sí">Sí</option>
-                    </select>
-                    <input type="text" id="intExtra" class="input-extra" placeholder="¿Cuándo y dónde?">
-                </div>
-            </div>
-            <div class="sub-punto">
-                <span class="sub-titulo">2.2 Alergias y Enfermedades</span>
-                <label>Alergias</label>
-                <div class="chip-group" id="alergiaChips">
-                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Medicamentos</div>
-                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Alimentos</div>
-                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Otra</div>
-                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Ninguna</div>
-                </div>
-                <input type="text" id="alergiaExtra" class="input-extra" placeholder="Especifique...">
-                <label style="margin-top:20px; display:block;">Enfermedades Crónicas</label>
-                <div class="chip-group" id="cronicaChips">
-                    <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Diabetes</div>
-                    <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Hipertensión</div>
-                    <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Otra</div>
-                    <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Ninguna</div>
-                </div>
-                <input type="text" id="cronicaExtra" class="input-extra" placeholder="Especifique...">
-            </div>
-        </div>
-
-        <div class="bloque-azul">
-            <div class="bloque-titulo">3. Plan y Pago</div>
-            <div class="grid">
-                <div class="form-group">
-                    <label>Plan</label>
-                    <select id="plan"><option>Plan Global</option><option>Plan Vital</option></select>
-                </div>
-                <div class="form-group">
-                    <label>Pago</label>
-                    <select id="pago"><option>Débito</option><option>Efectivo</option></select>
-                </div>
-            </div>
-        </div>
-
-        <button class="btn-verde" id="btnEnviar" onclick="enviarSolicitud()">Enviar Solicitud Final</button>
-    </div>
-
-    <div id="success" class="hidden" style="text-align:center; padding:60px 20px; color:var(--primary-blue);">
-        <h2>¡Solicitud Enviada!</h2>
-        <button onclick="location.reload()" style="padding:10px; cursor:pointer;">Cargar otra</button>
-    </div>
-</div>
-
-<script>
-    function manejarChip(el, extraId) {
-        if (el.innerText === 'Ninguna') {
-            Array.from(el.parentElement.children).forEach(c => c.classList.remove('selected'));
-        } else {
-            const ning = Array.from(el.parentElement.children).find(c => c.innerText === 'Ninguna');
-            if (ning) ning.classList.remove('selected');
-        }
-        el.classList.toggle('selected');
-        const otra = Array.from(el.parentElement.querySelectorAll('.chip.selected')).some(c => c.innerText === 'Otra');
-        document.getElementById(extraId).style.display = otra ? 'block' : 'none';
-    }
-
-    function obtenerUbicacion() {
-        if (!navigator.geolocation) return alert("GPS no disponible");
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
-                const d = await res.json();
-                document.getElementById('domicilio').value = (d.address.road || "") + " " + (d.address.house_number || "");
-                document.getElementById('localidad').value = d.address.city || d.address.town || "";
-                document.getElementById('cp').value = d.address.postcode || "";
-            } catch (e) { alert("Error GPS"); }
-        });
-    }
-
-    async function enviarSolicitud() {
-        const btn = document.getElementById('btnEnviar');
-        btn.textContent = 'Enviando...'; btn.disabled = true;
-
-        const formData = new URLSearchParams();
+        // 2. Creamos el contenedor de datos
+        const datos = new URLSearchParams();
         
-        // --- VINCULACIÓN DIRECTA CON LAS COLUMNAS A, B, C ---
-        // El script de Google recibe 'id_vendedor', 'tipo_afiliacion' y 'dni'
-        formData.append('id_vendedor', document.getElementById('idVendedor').value);      // A
-        formData.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value); // B
-        formData.append('dni', document.getElementById('dniInput').value);                 // C
+        // --- ORDEN CRÍTICO: ESTO DEFINE LAS COLUMNAS EN EL EXCEL ---
         
-        formData.append('apellido', document.getElementById('apellido').value);            // D
-        formData.append('nombre', document.getElementById('nombre').value);                // E
-        formData.append('fecha_nacimiento', document.getElementById('fechaNac').value);
-        formData.append('domicilio', document.getElementById('domicilio').value);
-        formData.append('localidad', document.getElementById('localidad').value);
-        formData.append('cp', document.getElementById('cp').value);
-        formData.append('celular', document.getElementById('celular').value);
-        formData.append('mail', document.getElementById('email').value);
-        formData.append('obra_social', document.getElementById('obraSocial').value);
+        // A: ID Vendedor
+        datos.append('id_vendedor', document.getElementById('idVendedor').value);
         
-        formData.append('medicacion', document.getElementById('tomaMedicacion').value === 'Sí' ? document.getElementById('medExtra').value : 'No');
-        formData.append('internacion', document.getElementById('tuvoInternacion').value === 'Sí' ? document.getElementById('intExtra').value : 'No');
+        // B: Tipo de Afiliación (Grupo Familiar / Titular)
+        datos.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value);
         
-        const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
-        formData.append('alergia', alergias || 'Ninguna');
+        // C: DNI
+        datos.append('dni', document.getElementById('dniInput').value); 
+        
+        // D: Apellido
+        datos.append('apellido', document.getElementById('apellido').value);
+        
+        // E: Nombre
+        datos.append('nombre', document.getElementById('nombre').value);
+        
+        // F en adelante...
+        datos.append('fecha_nacimiento', document.getElementById('fechaNac').value);
+        datos.append('domicilio', document.getElementById('domicilio').value);
+        datos.append('localidad', document.getElementById('localidad').value);
+        datos.append('cp', document.getElementById('cp').value);
+        datos.append('celular', document.getElementById('celular').value);
+        datos.append('mail', document.getElementById('email').value);
+        datos.append('obra_social', document.getElementById('obraSocial').value);
+        
+        // Salud
+        datos.append('medicacion', document.getElementById('tomaMedicacion').value === 'Sí' ? document.getElementById('medExtra').value : 'No');
+        datos.append('internacion', document.getElementById('tuvoInternacion').value === 'Sí' ? document.getElementById('intExtra').value : 'No');
+        datos.append('alergia', alergiasSeleccionadas || 'Ninguna');
+        datos.append('enfermedad_cronica', cronicasSeleccionadas || 'Ninguna');
+        
+        // Plan y Pago
+        datos.append('plan', document.getElementById('plan').value);
+        datos.append('pago', document.getElementById('pago').value);
+        datos.append('fecha_envio', new Date().toLocaleString());
 
-        const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
-        formData.append('enfermedad_cronica', cronicas || 'Ninguna');
-
-        formData.append('plan', document.getElementById('plan').value);
-        formData.append('pago', document.getElementById('pago').value);
-        formData.append('fecha_envio', new Date().toLocaleString());
-
+        // 3. URL de tu Script
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
 
-        try {
-            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
-            document.getElementById('mainForm').classList.add('hidden');
-            document.getElementById('success').classList.remove('hidden');
-        } catch (e) {
-            alert("Error"); btn.disabled = false; btn.textContent = 'Enviar';
-        }
+        // 4. Envío real
+        await fetch(scriptURL, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            body: datos 
+        });
+
+        // 5. Éxito
+        document.getElementById('mainForm').classList.add('hidden');
+        document.getElementById('success').classList.remove('hidden');
+        window.scrollTo(0,0);
+
+    } catch (error) {
+        alert("Hubo un error al enviar. Por favor, reintente.");
+        btn.disabled = false;
+        btn.textContent = 'Enviar Solicitud Final';
     }
-</script>
-</body>
-</html>
+}
