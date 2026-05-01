@@ -22,13 +22,14 @@
         label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; }
         input, select { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 15px; box-sizing: border-box; background: white; color: #333; }
         
+        /* ESTILO CHIPS CORREGIDO */
         .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .chip { padding: 8px 15px; border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; cursor: pointer; font-size: 13px; background: rgba(255,255,255,0.1); transition: 0.3s; user-select: none; }
+        .chip { padding: 10px 18px; border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; cursor: pointer; font-size: 13px; background: rgba(255,255,255,0.1); transition: 0.3s; user-select: none; }
         .chip.selected { background: var(--accent-green) !important; border-color: var(--accent-green) !important; color: white !important; font-weight: bold; }
         
         .input-extra { margin-top: 10px; display: none; background: #fff; color: #333; }
         .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 20px; width: calc(100% - 30px); margin: 0 15px 20px 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-geo { background: white; color: var(--primary-blue); border: none; border-radius: 8px; padding: 0 10px; cursor: pointer; font-size: 18px; height: 45px; }
+        .btn-geo { background: white; color: var(--primary-blue); border: none; border-radius: 8px; padding: 0 10px; cursor: pointer; font-size: 18px; height: 45px; min-width: 50px; }
         .hidden { display: none; }
     </style>
 </head>
@@ -45,7 +46,7 @@
             <div class="bloque-titulo">1. Datos Personales</div>
             <div class="form-group">
                 <label>ID Vendedor / Promotor *</label>
-                <input type="text" id="idVendedor" placeholder="Su código">
+                <input type="text" id="idVendedor" placeholder="Código de vendedor">
             </div>
             <div class="form-group">
                 <label>Tipo de Afiliación</label>
@@ -63,7 +64,7 @@
                 <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
             </div>
             <div class="form-group">
-                <label>Dirección (📍 Haz clic para autocompletar)</label>
+                <label>Dirección (📍 Clic en el icono para geolocalizar)</label>
                 <div style="display: flex; gap: 5px;">
                     <input type="text" id="domicilio" placeholder="Calle y número">
                     <button type="button" class="btn-geo" onclick="obtenerUbicacion()">📍</button>
@@ -77,17 +78,6 @@
                 <div class="form-group"><label>Celular</label><input type="tel" id="celular"></div>
                 <div class="form-group"><label>Email</label><input type="email" id="email"></div>
             </div>
-            <div class="form-group">
-                <label>Obra Social</label>
-                <select id="obraSocial">
-                    <option value="Particular">Particular (No tiene)</option>
-                    <option value="PAMI">PAMI</option>
-                    <option value="IOMA">IOMA</option>
-                    <option value="OSDE">OSDE</option>
-                    <option value="Swiss Medical">Swiss Medical</option>
-                    <option value="Otra">Otra</option>
-                </select>
-            </div>
         </div>
 
         <div class="bloque-azul">
@@ -97,14 +87,14 @@
                 <span class="sub-titulo">2.1 Tratamientos Actuales</span>
                 <div class="form-group">
                     <label>¿Toma Medicación Diaria?</label>
-                    <select id="tomaMedicacion" onchange="mostrarExtra(this, 'medExtra')">
+                    <select id="tomaMedicacion" onchange="mostrarSi(this, 'medExtra')">
                         <option value="No">No</option><option value="Sí">Sí</option>
                     </select>
-                    <input type="text" id="medExtra" class="input-extra" placeholder="Especifique medicación...">
+                    <input type="text" id="medExtra" class="input-extra" placeholder="¿Cuál medicación?">
                 </div>
                 <div class="form-group">
-                    <label>¿Tuvo Internación o Cirugía?</label>
-                    <select id="tuvoInternacion" onchange="mostrarExtra(this, 'intExtra')">
+                    <label>¿Tuvo alguna Internación o Cirugía?</label>
+                    <select id="tuvoInternacion" onchange="mostrarSi(this, 'intExtra')">
                         <option value="No">No</option><option value="Sí">Sí</option>
                     </select>
                     <input type="text" id="intExtra" class="input-extra" placeholder="¿Cuándo y dónde?">
@@ -115,65 +105,137 @@
                 <span class="sub-titulo">2.2 Alergias y Enfermedades</span>
                 <label>Alergias</label>
                 <div class="chip-group" id="alergiaChips">
-                    <div class="chip" onclick="seleccionarChip(this, 'alergiaExtra')">Medicamentos</div>
-                    <div class="chip" onclick="seleccionarChip(this, 'alergiaExtra')">Alimentos</div>
-                    <div class="chip" onclick="seleccionarChip(this, 'alergiaExtra')">Picaduras</div>
-                    <div class="chip" onclick="seleccionarChip(this, 'alergiaExtra')">Otra</div>
-                    <div class="chip" onclick="seleccionarChip(this, 'alergiaExtra')">Ninguna</div>
+                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Medicamentos</div>
+                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Alimentos</div>
+                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Picaduras</div>
+                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Otra</div>
+                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Ninguna</div>
                 </div>
                 <input type="text" id="alergiaExtra" class="input-extra" placeholder="Especifique alergia...">
 
                 <label style="margin-top:20px; display:block;">Enfermedades Crónicas</label>
                 <div class="chip-group" id="cronicaChips">
-                    <div class="chip" onclick="seleccionarChip(this, 'cronicaExtra')">Diabetes</div>
-                    <div class="chip" onclick="seleccionarChip(this, 'cronicaExtra')">Hipertensión</div>
-                    <div class="chip" onclick="seleccionarChip(this, 'cronicaExtra')">Asma</div>
-                    <div class="chip" onclick="seleccionarChip(this, 'cronicaExtra')">Otra</div>
-                    <div class="chip" onclick="seleccionarChip(this, 'cronicaExtra')">Ninguna</div>
+                    <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Diabetes</div>
+                    <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Hipertensión</div>
+                    <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Asma</div>
+                    <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Otra</div>
+                    <div class="chip" onclick="manejarChip(this, 'cronicaExtra')">Ninguna</div>
                 </div>
                 <input type="text" id="cronicaExtra" class="input-extra" placeholder="Especifique enfermedad...">
             </div>
         </div>
 
         <div class="bloque-azul">
-            <div class="bloque-titulo">3. Plan y Modalidad de Pago</div>
+            <div class="bloque-titulo">3. Plan y Pago</div>
             <div class="grid">
                 <div class="form-group">
                     <label>Plan Elegido</label>
                     <select id="plan">
-                        <option value="Plan Global">Plan Global</option>
-                        <option value="Plan Vital">Plan Vital</option>
-                        <option value="Plan Integral">Plan Integral</option>
+                        <option>Plan Global</option>
+                        <option>Plan Vital</option>
+                        <option>Plan Integral</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Modalidad de Pago</label>
                     <select id="pago">
-                        <option value="Débito Automático">Débito Automático</option>
-                        <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
-                        <option value="Efectivo / Rapipago">Efectivo / Rapipago</option>
+                        <option>Débito Automático</option>
+                        <option>Tarjeta de Crédito</option>
+                        <option>Efectivo</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <button class="btn-verde" id="btnEnviar" onclick="enviar()">Enviar Solicitud Final</button>
+        <button class="btn-verde" id="btnEnviar" onclick="enviarSolicitud()">Enviar Solicitud Final</button>
     </div>
 
     <div id="success" class="hidden" style="text-align:center; padding:60px 20px; color:var(--primary-blue);">
         <h2>¡Solicitud Enviada con Éxito!</h2>
-        <button onclick="location.reload()" style="cursor:pointer; padding:10px; border-radius: 8px;">Cargar otra</button>
+        <button onclick="location.reload()" style="padding:10px; cursor:pointer;">Cargar otra</button>
     </div>
 </div>
 
 <script>
-    function mostrarExtra(select, id) { document.getElementById(id).style.display = (select.value === 'Sí' ? 'block' : 'none'); }
+    // 1. Lógica de Medicación e Internación
+    function mostrarSi(select, inputId) {
+        document.getElementById(inputId).style.display = (select.value === 'Sí') ? 'block' : 'none';
+    }
 
-    function seleccionarChip(el, extraId) {
+    // 2. Lógica de Chips (Alergias y Enfermedades) - REFORZADA
+    function manejarChip(el, extraId) {
         if (el.innerText === 'Ninguna') {
             Array.from(el.parentElement.children).forEach(c => c.classList.remove('selected'));
+            document.getElementById(extraId).style.display = 'none';
         } else {
-            const ning = Array.from(el.parentElement.children).find(c => c.innerText === 'Ninguna');
-            if (ning) ning.classList.remove('selected');
+            const ninguna = Array.from(el.parentElement.children).find(c => c.innerText === 'Ninguna');
+            if (ninguna) ninguna.classList.remove('selected');
         }
-        el.classList.toggle('
+        
+        el.classList.toggle('selected');
+
+        const hijos = Array.from(el.parentElement.querySelectorAll('.chip.selected'));
+        const tieneOtra = hijos.some(c => c.innerText === 'Otra');
+        document.getElementById(extraId).style.display = tieneOtra ? 'block' : 'none';
+    }
+
+    // 3. Geolocalización (📍)
+    function obtenerUbicacion() {
+        if (!navigator.geolocation) return alert("Tu navegador no soporta GPS");
+        
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+                const data = await res.json();
+                const a = data.address;
+                
+                document.getElementById('domicilio').value = (a.road || "") + " " + (a.house_number || "");
+                document.getElementById('localidad').value = a.city || a.town || a.village || "";
+                document.getElementById('cp').value = a.postcode || "";
+            } catch (e) { alert("Error al obtener dirección"); }
+        }, () => alert("Debes permitir el acceso a tu ubicación"));
+    }
+
+    // 4. Envío de Datos
+    async function enviarSolicitud() {
+        const btn = document.getElementById('btnEnviar');
+        btn.textContent = 'Enviando...'; btn.disabled = true;
+
+        const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
+        const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
+
+        const formData = new URLSearchParams();
+        // ORDEN DE COLUMNAS (A, B, C...)
+        formData.append('id_vendedor', document.getElementById('idVendedor').value);
+        formData.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value);
+        formData.append('dni', document.getElementById('dni').value);
+        formData.append('apellido', document.getElementById('apellido').value);
+        formData.append('nombre', document.getElementById('nombre').value);
+        formData.append('fecha_nacimiento', document.getElementById('fechaNac').value);
+        formData.append('domicilio', document.getElementById('domicilio').value);
+        formData.append('localidad', document.getElementById('localidad').value);
+        formData.append('cp', document.getElementById('cp').value);
+        formData.append('celular', document.getElementById('celular').value);
+        formData.append('mail', document.getElementById('email').value);
+        formData.append('medicacion', document.getElementById('tomaMedicacion').value === 'Sí' ? document.getElementById('medExtra').value : 'No');
+        formData.append('internacion', document.getElementById('tuvoInternacion').value === 'Sí' ? document.getElementById('intExtra').value : 'No');
+        formData.append('alergia', alergias || 'Ninguna');
+        formData.append('enfermedad_cronica', cronicas || 'Ninguna');
+        formData.append('plan', document.getElementById('plan').value);
+        formData.append('pago', document.getElementById('pago').value);
+        formData.append('fecha_envio', new Date().toLocaleString());
+
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
+
+        try {
+            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
+            document.getElementById('mainForm').classList.add('hidden');
+            document.getElementById('success').classList.remove('hidden');
+            window.scrollTo(0,0);
+        } catch (e) {
+            alert("Error al enviar"); btn.disabled = false; btn.textContent = 'Enviar Solicitud Final';
+        }
+    }
+</script>
+</body>
+</html>
