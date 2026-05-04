@@ -21,7 +21,7 @@
         textarea { height: 80px; resize: none; font-family: inherit; }
         .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .chip { padding: 10px 18px; border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; cursor: pointer; font-size: 13px; background: rgba(255,255,255,0.1); transition: 0.3s; user-select: none; }
-        .chip.selected { background: var(--accent-green) !important; border-color: var(--accent-green) !important; color: white !important; font-weight: bold; }
+        .chip.selected { background: var(--accent-green) !important; color: white !important; font-weight: bold; }
         .input-extra { margin-top: 10px; display: none; background: #fff; color: #333; }
         .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 20px; width: calc(100% - 30px); margin: 0 15px 20px 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .btn-geo { background: white; color: var(--primary-blue); border: none; border-radius: 8px; padding: 0 10px; cursor: pointer; font-size: 18px; height: 45px; }
@@ -59,8 +59,23 @@
                 <div class="form-group"><label>Apellido</label><input type="text" id="apellido"></div>
                 <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
             </div>
+            
             <div class="form-group">
-                <label>Dirección (📍 Geolocalización)</label>
+                <label>Obra Social / Cobertura Actual</label>
+                <input list="obras" id="obraSocial" placeholder="Escriba para buscar o ingrese una nueva">
+                <datalist id="obras">
+                    <option value="Particular">
+                    <option value="PAMI">
+                    <option value="IOMA">
+                    <option value="OSDE">
+                    <option value="Swiss Medical">
+                    <option value="OSECAC">
+                    <option value="Unión Personal">
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label>Dirección (📍 Clic para ubicar)</label>
                 <div style="display: flex; gap: 5px;">
                     <input type="text" id="domicilio" placeholder="Calle y número">
                     <button type="button" class="btn-geo" onclick="obtenerUbicacion()">📍</button>
@@ -79,160 +94,15 @@
         <div class="bloque-azul">
             <div class="bloque-titulo">2. Antecedentes de Salud</div>
             <div class="sub-punto">
-                <span class="sub-titulo">2.1 Tratamientos</span>
+                <span class="sub-titulo">2.1 Cirugías e Internaciones</span>
                 <div class="form-group">
-                    <label>¿Toma Medicación Diaria?</label>
-                    <select id="tomaMedicacion" onchange="document.getElementById('medExtra').style.display=(this.value=='Sí'?'block':'none')">
-                        <option value="No">No</option><option value="Sí">Sí</option>
-                    </select>
-                    <input type="text" id="medExtra" class="input-extra" placeholder="¿Cuál?">
-                </div>
-                <div class="form-group">
-                    <label>¿Tuvo Internación o Cirugía?</label>
+                    <label>¿Tuvo alguna internación o cirugía?</label>
                     <select id="tuvoInternacion" onchange="document.getElementById('intExtra').style.display=(this.value=='Sí'?'block':'none')">
                         <option value="No">No</option><option value="Sí">Sí</option>
                     </select>
-                    <input type="text" id="intExtra" class="input-extra" placeholder="¿Cuándo y dónde?">
-                </div>
-            </div>
-            <div class="sub-punto">
-                <span class="sub-titulo">2.2 Alergias y Enfermedades</span>
-                <div class="chip-group" id="alergiaChips">
-                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Medicamentos</div>
-                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Alimentos</div>
-                    <div class="chip" onclick="manejarChip(this, 'alergiaExtra')">Ninguna</div>
-                </div>
-                <input type="text" id="alergiaExtra" class="input-extra" placeholder="Especifique...">
-            </div>
-        </div>
-
-        <div class="bloque-azul">
-            <div class="bloque-titulo">3. Plan y Pago</div>
-            <div class="grid">
-                <div class="form-group">
-                    <label>Plan</label>
-                    <select id="plan"><option>Plan Global</option><option>Plan Vital</option></select>
+                    <input type="text" id="intExtra" class="input-extra" placeholder="¿Cuándo y qué tipo de cirugía?">
                 </div>
                 <div class="form-group">
-                    <label>Pago</label>
-                    <select id="pago"><option>Débito</option><option>Efectivo</option></select>
-                </div>
-            </div>
-        </div>
-
-        <div class="bloque-azul">
-            <div class="bloque-titulo">4. Observaciones y Adjuntos</div>
-            <div class="form-group">
-                <label>Notas adicionales</label>
-                <textarea id="observacionesInput" placeholder="Aclaraciones..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>Adjuntar Foto DNI / Credencial</label>
-                <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)" style="background:none; color:white; padding:0">
-                <img id="imgPreview" class="preview-img">
-            </div>
-        </div>
-
-        <button class="btn-verde" id="btnEnviar" onclick="enviarSolicitud()">Enviar Solicitud Final</button>
-    </div>
-
-    <div id="success" class="hidden" style="text-align:center; padding:60px 20px; color:var(--primary-blue);">
-        <h2>¡Solicitud Enviada con Éxito!</h2>
-        <button onclick="location.reload()" style="padding:10px; cursor:pointer;">Cargar otra</button>
-    </div>
-</div>
-
-<script>
-    let fotoBase64 = "";
-    let fotoNombre = "";
-    let fotoMime = "";
-
-    function manejarChip(el, extraId) {
-        if (el.innerText === 'Ninguna') {
-            Array.from(el.parentElement.children).forEach(c => c.classList.remove('selected'));
-        } else {
-            const ning = Array.from(el.parentElement.children).find(c => c.innerText === 'Ninguna');
-            if (ning) ning.classList.remove('selected');
-        }
-        el.classList.toggle('selected');
-    }
-
-    function previsualizar(input) {
-        const file = input.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                fotoBase64 = e.target.result;
-                fotoNombre = file.name;
-                fotoMime = file.type;
-                const img = document.getElementById('imgPreview');
-                img.src = e.target.result; img.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function obtenerUbicacion() {
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
-                const d = await res.json();
-                document.getElementById('domicilio').value = (d.address.road || "") + " " + (d.address.house_number || "");
-                document.getElementById('localidad').value = d.address.city || d.address.town || "";
-                document.getElementById('cp').value = d.address.postcode || "";
-            } catch (e) { alert("Error GPS"); }
-        });
-    }
-
-    async function enviarSolicitud() {
-        const btn = document.getElementById('btnEnviar');
-        btn.textContent = 'Enviando...'; btn.disabled = true;
-
-        const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
-
-        const formData = new URLSearchParams();
-        
-        // ORDEN ESTRICTO PARA COLUMNAS A, B, C...
-        formData.append('id_vendedor', document.getElementById('idVendedor').value);      // A
-        formData.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value); // B
-        formData.append('dni', document.getElementById('dniInput').value);                 // C
-        
-        formData.append('apellido', document.getElementById('apellido').value);            // D
-        formData.append('nombre', document.getElementById('nombre').value);                // E
-        formData.append('fecha_nacimiento', document.getElementById('fechaNac').value);
-        formData.append('domicilio', document.getElementById('domicilio').value);
-        formData.append('localidad', document.getElementById('localidad').value);
-        formData.append('cp', document.getElementById('cp').value);
-        formData.append('celular', document.getElementById('celular').value);
-        formData.append('mail', document.getElementById('email').value);
-        formData.append('obra_social', document.getElementById('obraSocial').value);
-        
-        formData.append('medicacion', document.getElementById('tomaMedicacion').value === 'Sí' ? document.getElementById('medExtra').value : 'No');
-        formData.append('internacion', document.getElementById('tuvoInternacion').value === 'Sí' ? document.getElementById('intExtra').value : 'No');
-        formData.append('alergia', alergias || 'Ninguna');
-        
-        formData.append('plan', document.getElementById('plan').value);
-        formData.append('pago', document.getElementById('pago').value);
-        
-        // BLOQUE 4: OBSERVACIONES Y FOTO
-        formData.append('observaciones', document.getElementById('observacionesInput').value);
-        formData.append('fotoData', fotoBase64);
-        formData.append('fotoNombre', fotoNombre);
-        formData.append('fotoMime', fotoMime);
-        
-        formData.append('fecha_envio', new Date().toLocaleString());
-
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
-
-        try {
-            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
-            document.getElementById('mainForm').classList.add('hidden');
-            document.getElementById('success').classList.remove('hidden');
-            window.scrollTo(0,0);
-        } catch (e) {
-            alert("Error"); btn.disabled = false; btn.textContent = 'Enviar';
-        }
-    }
-</script>
-</body>
-</html>
+                    <label>¿Toma medicación diaria?</label>
+                    <select id="tomaMedicacion" onchange="document.getElementById('medExtra').style.display=(this.value=='Sí'?'block':'none')">
+                        <option value="No">No</option><option value="Sí">Sí</option>
