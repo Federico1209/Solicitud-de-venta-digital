@@ -9,19 +9,20 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-body); margin: 0; padding: 10px; }
         .container { background: white; max-width: 600px; margin: auto; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .header { text-align: center; padding: 20px; background: white; border-bottom: 3px solid var(--primary-blue); }
-        .bloque-azul { background-color: var(--primary-blue); color: var(--text-white); padding: 20px; margin: 10px; border-radius: 12px; }
+        .bloque-azul { background-color: var(--primary-blue); color: var(--text-white); padding: 20px; margin: 15px; border-radius: 12px; }
         .bloque-titulo { font-size: 16px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; text-transform: uppercase; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .form-group { margin-bottom: 12px; }
         label { display: block; font-size: 10px; font-weight: 600; margin-bottom: 4px; text-transform: uppercase; color: rgba(255,255,255,0.9); }
-        input, select, textarea { width: 100%; padding: 10px; border: none; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 14px; box-sizing: border-box; background: white; color: #333; }
         textarea { height: 80px; resize: none; font-family: inherit; }
         .chip-group { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
-        .chip { padding: 8px 12px; border: 1px solid rgba(255,255,255,0.3); border-radius: 15px; cursor: pointer; font-size: 12px; background: rgba(255,255,255,0.1); transition: 0.3s; }
-        .chip.selected { background: var(--accent-green) !important; font-weight: bold; }
-        .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 18px; width: calc(100% - 20px); margin: 10px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid white; }
+        .chip { padding: 8px 12px; border: 1px solid rgba(255,255,255,0.3); border-radius: 15px; cursor: pointer; font-size: 12px; background: rgba(255,255,255,0.1); transition: 0.3s; user-select: none; }
+        .chip.selected { background: var(--accent-green) !important; color: white !important; font-weight: bold; }
+        .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 18px; width: calc(100% - 20px); margin: 10px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-geo { width: 50px; cursor: pointer; border-radius: 6px; border: none; background: white; font-size: 18px; }
         .hidden { display: none; }
+        .preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid white; }
     </style>
 </head>
 <body>
@@ -33,16 +34,9 @@
         <div class="bloque-azul">
             <div class="bloque-titulo">1. Datos Personales</div>
             <div class="grid">
-                <div class="form-group">
-                    <label>ID Vendedor / Promotor *</label>
-                    <input type="text" id="idVendedor" placeholder="Ingrese ID">
-                </div>
-                <div class="form-group">
-                    <label>Titular / Grupo</label>
-                    <select id="tipoAfiliacion">
-                        <option value="Solo Titular">Solo Titular</option>
-                        <option value="Grupo Familiar">Grupo Familiar</option>
-                    </select>
+                <div class="form-group"><label>ID Vendedor / Promotor *</label><input type="text" id="idVendedor" placeholder="Ingrese ID"></div>
+                <div class="form-group"><label>Titular / Grupo</label>
+                    <select id="tipoAfiliacion"><option value="Solo Titular">Solo Titular</option><option value="Grupo Familiar">Grupo Familiar</option></select>
                 </div>
             </div>
             <div class="grid">
@@ -57,7 +51,7 @@
                 <label>Dirección 📍 (Clic icono para ubicar)</label>
                 <div style="display: flex; gap: 5px;">
                     <input type="text" id="domicilio" placeholder="Calle y número">
-                    <button type="button" onclick="obtenerUbicacion()" style="width:50px; cursor:pointer; border-radius:6px; border:none;">📍</button>
+                    <button type="button" class="btn-geo" onclick="obtenerUbicacion()">📍</button>
                 </div>
             </div>
             <div class="grid">
@@ -66,7 +60,7 @@
             </div>
             <div class="grid">
                 <div class="form-group"><label>Celular</label><input type="tel" id="celular"></div>
-                <div class="form-group"><label>Mail</label><input type="email" id="email"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="email"></div>
             </div>
             <div class="form-group">
                 <label>Obra Social</label>
@@ -88,16 +82,16 @@
             </div>
             <label>Alergias</label>
             <div class="chip-group" id="alergiaChips">
-                <div class="chip" onclick="this.classList.toggle('selected')">Medicamentos</div>
-                <div class="chip" onclick="this.classList.toggle('selected')">Alimentos</div>
-                <div class="chip" onclick="this.classList.toggle('selected')">Ninguna</div>
+                <div class="chip" onclick="toggleChip(this)">Medicamentos</div>
+                <div class="chip" onclick="toggleChip(this)">Alimentos</div>
+                <div class="chip" onclick="toggleChip(this)">Ninguna</div>
             </div>
             <label style="margin-top:10px; display:block">Enfermedades Crónicas</label>
             <div class="chip-group" id="cronicaChips">
-                <div class="chip" onclick="this.classList.toggle('selected')">Diabetes</div>
-                <div class="chip" onclick="this.classList.toggle('selected')">Hipertensión</div>
-                <div class="chip" onclick="this.classList.toggle('selected')">Asma</div>
-                <div class="chip" onclick="this.classList.toggle('selected')">Ninguna</div>
+                <div class="chip" onclick="toggleChip(this)">Diabetes</div>
+                <div class="chip" onclick="toggleChip(this)">Hipertensión</div>
+                <div class="chip" onclick="toggleChip(this)">Asma</div>
+                <div class="chip" onclick="toggleChip(this)">Ninguna</div>
             </div>
         </div>
 
@@ -111,7 +105,7 @@
 
         <div class="bloque-azul">
             <div class="bloque-titulo">4. Observaciones y Adjuntos</div>
-            <textarea id="observacionesInput" placeholder="Aclaraciones sobre el grupo familiar o notas adicionales..."></textarea>
+            <textarea id="observacionesInput" placeholder="Aclaraciones o notas adicionales..."></textarea>
             <div class="form-group" style="margin-top:15px">
                 <label>Foto DNI / Credencial</label>
                 <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)" style="background:none; color:white; padding:0">
@@ -131,6 +125,16 @@
 <script>
     let fotoBase64 = "", fotoNombre = "", fotoMime = "";
 
+    function toggleChip(el) {
+        if (el.innerText === "Ninguna") {
+            Array.from(el.parentElement.children).forEach(c => c.classList.remove('selected'));
+        } else {
+            const ning = Array.from(el.parentElement.children).find(c => c.innerText === "Ninguna");
+            if (ning) ning.classList.remove('selected');
+        }
+        el.classList.toggle('selected');
+    }
+
     function previsualizar(input) {
         const file = input.files[0];
         if (file) {
@@ -145,12 +149,15 @@
     }
 
     function obtenerUbicacion() {
+        if (!navigator.geolocation) return alert("GPS no disponible");
         navigator.geolocation.getCurrentPosition(async (pos) => {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
-            const d = await res.json();
-            document.getElementById('domicilio').value = (d.address.road || "") + " " + (d.address.house_number || "");
-            document.getElementById('localidad').value = d.address.city || d.address.town || "";
-            document.getElementById('cp').value = d.address.postcode || "";
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+                const d = await res.json();
+                document.getElementById('domicilio').value = (d.address.road || "") + " " + (d.address.house_number || "");
+                document.getElementById('localidad').value = d.address.city || d.address.town || "";
+                document.getElementById('cp').value = d.address.postcode || "";
+            } catch (e) { alert("Error al obtener dirección"); }
         });
     }
 
@@ -162,13 +169,11 @@
         const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
 
         const d = new URLSearchParams();
-        
-        // ORDEN DE COLUMNAS (A, B, C...)
-        d.append('id_vendedor', document.getElementById('idVendedor').value);      // A
-        d.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value); // B
-        d.append('dni', document.getElementById('dniInput').value);                 // C
-        d.append('apellido', document.getElementById('apellido').value);            // D
-        d.append('nombre', document.getElementById('nombre').value);                // E
+        d.append('id_vendedor', document.getElementById('idVendedor').value);
+        d.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value);
+        d.append('dni', document.getElementById('dniInput').value);
+        d.append('apellido', document.getElementById('apellido').value);
+        d.append('nombre', document.getElementById('nombre').value);
         d.append('fecha_nacimiento', document.getElementById('fechaNac').value);
         d.append('domicilio', document.getElementById('domicilio').value);
         d.append('localidad', document.getElementById('localidad').value);
@@ -176,22 +181,20 @@
         d.append('celular', document.getElementById('celular').value);
         d.append('mail', document.getElementById('email').value);
         d.append('obra_social', document.getElementById('obraSocial').value);
-        
         d.append('medicacion', document.getElementById('tomaMed').value === 'Sí' ? document.getElementById('medE').value : 'No');
         d.append('internacion', document.getElementById('tuvoInt').value === 'Sí' ? document.getElementById('intE').value : 'No');
         d.append('alergia', alergias || 'Ninguna');
         d.append('enfermedad_cronica', cronicas || 'Ninguna');
-        
         d.append('plan', document.getElementById('plan').value);
         d.append('pago', document.getElementById('pago').value);
-        
         d.append('observaciones', document.getElementById('observacionesInput').value);
         d.append('fotoData', fotoBase64);
         d.append('fotoNombre', fotoNombre);
         d.append('fotoMime', fotoMime);
         d.append('fecha_envio', new Date().toLocaleString());
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
+        // URL CORREGIDA
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
 
         try {
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: d });
@@ -199,7 +202,8 @@
             document.getElementById('success').classList.remove('hidden');
             window.scrollTo(0,0);
         } catch (e) {
-            alert("Error al enviar"); btn.disabled = false; btn.textContent = 'Enviar Solicitud Final';
+            alert("Error al enviar");
+            btn.disabled = false; btn.textContent = 'Enviar Solicitud Final';
         }
     }
 </script>
