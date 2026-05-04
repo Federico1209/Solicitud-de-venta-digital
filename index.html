@@ -18,7 +18,7 @@
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; }
         input, select, textarea { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 15px; box-sizing: border-box; background: white; color: #333; }
-        textarea { height: 80px; resize: none; font-family: inherit; }
+        textarea { height: 100px; resize: none; font-family: inherit; }
         .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .chip { padding: 10px 18px; border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; cursor: pointer; font-size: 13px; background: rgba(255,255,255,0.1); transition: 0.3s; user-select: none; }
         .chip.selected { background: var(--accent-green) !important; color: white !important; font-weight: bold; }
@@ -41,7 +41,7 @@
             <div class="bloque-titulo">1. Datos Personales</div>
             <div class="form-group">
                 <label>ID Vendedor / Promotor *</label>
-                <input type="text" id="idVendedor" placeholder="Ingrese su código de vendedor">
+                <input type="text" id="idVendedor" placeholder="Ingrese su código">
             </div>
             <div class="form-group">
                 <label>Tipo de Afiliación</label>
@@ -74,40 +74,25 @@
             </div>
             <div class="form-group">
                 <label>Obra Social / Cobertura Actual</label>
-                <input list="obras" id="obraSocial" placeholder="Escriba para buscar...">
+                <input list="obras" id="obraSocial" placeholder="Buscar...">
                 <datalist id="obras">
-                    <option value="Particular"><option value="PAMI"><option value="IOMA"><option value="OSDE"><option value="Swiss Medical">
+                    <option value="Particular"><option value="PAMI"><option value="IOMA"><option value="OSDE">
                 </datalist>
             </div>
         </div>
 
         <div class="bloque-azul">
-            <div class="bloque-titulo">2. Antecedentes de Salud</div>
+            <div class="bloque-titulo">2. Salud</div>
             <div class="sub-punto">
-                <span class="sub-titulo">2.1 Tratamientos e Internaciones</span>
-                <div class="form-group">
-                    <label>¿Tuvo alguna internación o cirugía?</label>
-                    <select id="tuvoInternacion" onchange="document.getElementById('intExtra').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
-                    <input type="text" id="intExtra" style="display:none; margin-top:10px" placeholder="¿Cuándo y qué tipo?">
-                </div>
-                <div class="form-group">
-                    <label>¿Toma medicación diaria?</label>
-                    <select id="tomaMedicacion" onchange="document.getElementById('medExtra').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
-                    <input type="text" id="medExtra" style="display:none; margin-top:10px" placeholder="¿Qué medicación?">
-                </div>
+                <label>¿Toma medicación diaria?</label>
+                <select id="tomaMedicacion" onchange="document.getElementById('medExtra').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
+                <input type="text" id="medExtra" style="display:none; margin-top:10px" placeholder="¿Qué medicación?">
             </div>
             <div class="sub-punto">
-                <span class="sub-titulo">2.2 Alergias y Enfermedades</span>
-                <label>Alergias (Seleccione varias si aplica)</label>
+                <label>Alergias</label>
                 <div class="chip-group" id="alergiaChips">
                     <div class="chip" onclick="this.classList.toggle('selected')">Medicamentos</div>
                     <div class="chip" onclick="this.classList.toggle('selected')">Alimentos</div>
-                    <div class="chip" onclick="this.classList.toggle('selected')">Ninguna</div>
-                </div>
-                <label style="margin-top:15px; display:block;">Enfermedades Crónicas</label>
-                <div class="chip-group" id="cronicaChips">
-                    <div class="chip" onclick="this.classList.toggle('selected')">Diabetes</div>
-                    <div class="chip" onclick="this.classList.toggle('selected')">Hipertensión</div>
                     <div class="chip" onclick="this.classList.toggle('selected')">Ninguna</div>
                 </div>
             </div>
@@ -123,9 +108,12 @@
 
         <div class="bloque-azul">
             <div class="bloque-titulo">4. Observaciones y Adjuntos</div>
-            <textarea id="observaciones" placeholder="Notas o aclaraciones adicionales..."></textarea>
-            <div class="form-group" style="margin-top:15px">
-                <label>Foto DNI / Credencial (Opcional)</label>
+            <div class="form-group">
+                <label>Notas adicionales</label>
+                <textarea id="observaciones" placeholder="Escriba aquí sus observaciones..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Adjuntar Foto DNI / Credencial</label>
                 <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)">
                 <img id="imgPreview" class="preview-img">
             </div>
@@ -135,8 +123,8 @@
     </div>
 
     <div id="success" class="hidden" style="text-align:center; padding:60px 20px; color:var(--primary-blue);">
-        <h2>¡Solicitud Enviada!</h2>
-        <button onclick="location.reload()" style="padding:10px; cursor:pointer;">Cargar otra</button>
+        <h2>¡Solicitud Enviada con Éxito!</h2>
+        <button onclick="location.reload()" style="padding:10px; cursor:pointer;">Nueva Carga</button>
     </div>
 </div>
 
@@ -175,14 +163,14 @@
         btn.textContent = 'Enviando...'; btn.disabled = true;
 
         const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
-        const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
 
         const formData = new URLSearchParams();
         
-        // ENVÍO DE DATOS EN ORDEN A, B, C...
-        formData.append('id_vendedor', document.getElementById('idVendedor').value);      // A
-        formData.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value); // B
-        formData.append('dni', document.getElementById('dniInput').value);                 // C
+        // --- ENVÍO DE DATOS EN ORDEN A, B, C... ---
+        formData.append('id_vendedor', document.getElementById('idVendedor').value);      // Columna A
+        formData.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value); // Columna B
+        formData.append('dni', document.getElementById('dniInput').value);                 // Columna C
+        
         formData.append('apellido', document.getElementById('apellido').value);            // D
         formData.append('nombre', document.getElementById('nombre').value);                // E
         formData.append('fecha_nacimiento', document.getElementById('fechaNac').value);    // F
@@ -193,25 +181,27 @@
         formData.append('mail', document.getElementById('email').value);                   // K
         formData.append('obra_social', document.getElementById('obraSocial').value);       // L
         
-        formData.append('internacion', document.getElementById('tuvoInternacion').value === 'Sí' ? document.getElementById('intExtra').value : 'No'); // M
-        formData.append('medicacion', document.getElementById('tomaMedicacion').value === 'Sí' ? document.getElementById('medExtra').value : 'No'); // N
-        formData.append('alergia', alergias || 'Ninguna');                                // O
-        formData.append('enfermedad_cronica', cronicas || 'Ninguna');                      // P
-        formData.append('plan', document.getElementById('plan').value);                    // Q
-        formData.append('pago', document.getElementById('pago').value);                    // R
-        formData.append('observaciones', document.getElementById('observaciones').value);  // S
+        formData.append('medicacion', document.getElementById('tomaMedicacion').value === 'Sí' ? document.getElementById('medExtra').value : 'No');
+        formData.append('alergia', alergias || 'Ninguna');
+        formData.append('plan', document.getElementById('plan').value);
+        formData.append('pago', document.getElementById('pago').value);
         
+        // BLOQUE 4: OBSERVACIONES Y FOTO
+        formData.append('observaciones', document.getElementById('observaciones').value);
         formData.append('fotoData', fotoBase64);
         formData.append('fotoNombre', fotoNombre);
         formData.append('fotoMime', fotoMime);
+        
         formData.append('fecha_envio', new Date().toLocaleString());
 
+        // URL de tu Script de Google
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
 
         try {
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData });
             document.getElementById('mainForm').classList.add('hidden');
             document.getElementById('success').classList.remove('hidden');
+            window.scrollTo(0,0);
         } catch (e) {
             alert("Error al enviar solicitud");
             btn.disabled = false; btn.textContent = 'Enviar Solicitud Final';
