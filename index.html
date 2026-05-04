@@ -9,7 +9,7 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-body); margin: 0; padding: 10px; }
         .container { background: white; max-width: 600px; margin: auto; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .header { text-align: center; padding: 20px; background: white; border-bottom: 3px solid var(--primary-blue); }
-        .bloque-azul { background-color: var(--primary-blue); color: var(--text-white); padding: 20px; margin: 15px; border-radius: 12px; }
+        .bloque-azul { background-color: var(--primary-blue); color: var(--text-white); padding: 20px; margin: 10px; border-radius: 12px; }
         .bloque-titulo { font-size: 16px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; text-transform: uppercase; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .form-group { margin-bottom: 12px; }
@@ -48,7 +48,7 @@
                 <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
             </div>
             <div class="form-group">
-                <label>Dirección 📍 (Clic icono para ubicar)</label>
+                <label>Dirección (📍 Clic icono para ubicar)</label>
                 <div style="display: flex; gap: 5px;">
                     <input type="text" id="domicilio" placeholder="Calle y número">
                     <button type="button" class="btn-geo" onclick="obtenerUbicacion()">📍</button>
@@ -105,7 +105,7 @@
 
         <div class="bloque-azul">
             <div class="bloque-titulo">4. Observaciones y Adjuntos</div>
-            <textarea id="observacionesInput" placeholder="Aclaraciones o notas adicionales..."></textarea>
+            <textarea id="observacionesInput" placeholder="Aclaraciones adicionales..."></textarea>
             <div class="form-group" style="margin-top:15px">
                 <label>Foto DNI / Credencial</label>
                 <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)" style="background:none; color:white; padding:0">
@@ -150,6 +150,7 @@
 
     function obtenerUbicacion() {
         if (!navigator.geolocation) return alert("GPS no disponible");
+        document.getElementById('domicilio').placeholder = "Buscando...";
         navigator.geolocation.getCurrentPosition(async (pos) => {
             try {
                 const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
@@ -193,8 +194,7 @@
         d.append('fotoMime', fotoMime);
         d.append('fecha_envio', new Date().toLocaleString());
 
-        // URL CORREGIDA
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
 
         try {
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: d });
