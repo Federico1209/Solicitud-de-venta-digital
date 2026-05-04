@@ -1,71 +1,28 @@
-async function enviarSolicitud() {
-    const btn = document.getElementById('btnEnviar');
-    btn.textContent = 'Enviando...';
-    btn.disabled = true;
+<div class="bloque-azul">
+    <div class="bloque-titulo">1. Datos Personales</div>
+    
+    <div class="form-group">
+        <label>ID Vendedor / Promotor *</label>
+        <input type="text" id="idVendedor" placeholder="Su código de vendedor">
+    </div>
 
-    try {
-        // 1. Recopilamos los datos de los chips primero
-        const alergiasSeleccionadas = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
-        const cronicasSeleccionadas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
+    <div class="form-group">
+        <label>Tipo de Afiliación</label>
+        <select id="tipoAfiliacion">
+            <option value="Solo Titular">Solo Titular</option>
+            <option value="Grupo Familiar">Grupo Familiar</option>
+        </select>
+    </div>
 
-        // 2. Creamos el contenedor de datos
-        const datos = new URLSearchParams();
-        
-        // --- ORDEN CRÍTICO: ESTO DEFINE LAS COLUMNAS EN EL EXCEL ---
-        
-        // A: ID Vendedor
-        datos.append('id_vendedor', document.getElementById('idVendedor').value);
-        
-        // B: Tipo de Afiliación (Grupo Familiar / Titular)
-        datos.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value);
-        
-        // C: DNI
-        datos.append('dni', document.getElementById('dniInput').value); 
-        
-        // D: Apellido
-        datos.append('apellido', document.getElementById('apellido').value);
-        
-        // E: Nombre
-        datos.append('nombre', document.getElementById('nombre').value);
-        
-        // F en adelante...
-        datos.append('fecha_nacimiento', document.getElementById('fechaNac').value);
-        datos.append('domicilio', document.getElementById('domicilio').value);
-        datos.append('localidad', document.getElementById('localidad').value);
-        datos.append('cp', document.getElementById('cp').value);
-        datos.append('celular', document.getElementById('celular').value);
-        datos.append('mail', document.getElementById('email').value);
-        datos.append('obra_social', document.getElementById('obraSocial').value);
-        
-        // Salud
-        datos.append('medicacion', document.getElementById('tomaMedicacion').value === 'Sí' ? document.getElementById('medExtra').value : 'No');
-        datos.append('internacion', document.getElementById('tuvoInternacion').value === 'Sí' ? document.getElementById('intExtra').value : 'No');
-        datos.append('alergia', alergiasSeleccionadas || 'Ninguna');
-        datos.append('enfermedad_cronica', cronicasSeleccionadas || 'Ninguna');
-        
-        // Plan y Pago
-        datos.append('plan', document.getElementById('plan').value);
-        datos.append('pago', document.getElementById('pago').value);
-        datos.append('fecha_envio', new Date().toLocaleString());
-
-        // 3. URL de tu Script
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
-
-        // 4. Envío real
-        await fetch(scriptURL, { 
-            method: 'POST', 
-            mode: 'no-cors', 
-            body: datos 
-        });
-
-        // 5. Éxito
-        document.getElementById('mainForm').classList.add('hidden');
-        document.getElementById('success').classList.remove('hidden');
-        window.scrollTo(0,0);
-
-    } catch (error) {
-        alert("Hubo un error al enviar. Por favor, reintente.");
-        btn.disabled = false;
-        btn.textContent = 'Enviar Solicitud Final';
-    }
-}
+    <div class="grid">
+        <div class="form-group">
+            <label>DNI</label>
+            <input type="number" id="dni" placeholder="Sin puntos">
+        </div>
+        <div class="form-group">
+            <label>Fecha Nacimiento</label>
+            <input type="date" id="fechaNac">
+        </div>
+    </div>
+    
+    </div>
