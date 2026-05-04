@@ -39,13 +39,19 @@
     <div id="mainForm">
         <div class="bloque-azul">
             <div class="bloque-titulo">1. Datos Personales</div>
-            <div class="form-group"><label>ID Vendedor *</label><input type="text" id="idVendedor"></div>
+            <div class="form-group">
+                <label>ID Vendedor / Promotor *</label>
+                <input type="text" id="idVendedor" placeholder="Ingrese su código de vendedor">
+            </div>
             <div class="form-group">
                 <label>Tipo de Afiliación</label>
-                <select id="tipoAfiliacion"><option value="Solo Titular">Solo Titular</option><option value="Grupo Familiar">Grupo Familiar</option></select>
+                <select id="tipoAfiliacion">
+                    <option value="Solo Titular">Solo Titular</option>
+                    <option value="Grupo Familiar">Grupo Familiar</option>
+                </select>
             </div>
             <div class="grid">
-                <div class="form-group"><label>DNI</label><input type="number" id="dniInput"></div>
+                <div class="form-group"><label>DNI</label><input type="number" id="dniInput" placeholder="Sin puntos"></div>
                 <div class="form-group"><label>Fecha Nacimiento</label><input type="date" id="fechaNac"></div>
             </div>
             <div class="grid">
@@ -70,7 +76,7 @@
                 <label>Obra Social / Cobertura Actual</label>
                 <input list="obras" id="obraSocial" placeholder="Escriba para buscar...">
                 <datalist id="obras">
-                    <option value="Particular"><option value="PAMI"><option value="IOMA"><option value="OSDE"><option value="Swiss Medical"><option value="OSECAC">
+                    <option value="Particular"><option value="PAMI"><option value="IOMA"><option value="OSDE"><option value="Swiss Medical">
                 </datalist>
             </div>
         </div>
@@ -82,7 +88,7 @@
                 <div class="form-group">
                     <label>¿Tuvo alguna internación o cirugía?</label>
                     <select id="tuvoInternacion" onchange="document.getElementById('intExtra').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
-                    <input type="text" id="intExtra" style="display:none; margin-top:10px" placeholder="¿Cuándo y qué tipo de cirugía?">
+                    <input type="text" id="intExtra" style="display:none; margin-top:10px" placeholder="¿Cuándo y qué tipo?">
                 </div>
                 <div class="form-group">
                     <label>¿Toma medicación diaria?</label>
@@ -92,7 +98,7 @@
             </div>
             <div class="sub-punto">
                 <span class="sub-titulo">2.2 Alergias y Enfermedades</span>
-                <label>Alergias</label>
+                <label>Alergias (Seleccione varias si aplica)</label>
                 <div class="chip-group" id="alergiaChips">
                     <div class="chip" onclick="this.classList.toggle('selected')">Medicamentos</div>
                     <div class="chip" onclick="this.classList.toggle('selected')">Alimentos</div>
@@ -119,7 +125,7 @@
             <div class="bloque-titulo">4. Observaciones y Adjuntos</div>
             <textarea id="observaciones" placeholder="Notas o aclaraciones adicionales..."></textarea>
             <div class="form-group" style="margin-top:15px">
-                <label>Foto DNI / Credencial</label>
+                <label>Foto DNI / Credencial (Opcional)</label>
                 <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)">
                 <img id="imgPreview" class="preview-img">
             </div>
@@ -173,7 +179,7 @@
 
         const formData = new URLSearchParams();
         
-        // ORDEN DE ENVÍO VINCULADO AL SCRIPT
+        // ENVÍO DE DATOS EN ORDEN A, B, C...
         formData.append('id_vendedor', document.getElementById('idVendedor').value);      // A
         formData.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value); // B
         formData.append('dni', document.getElementById('dniInput').value);                 // C
@@ -207,7 +213,7 @@
             document.getElementById('mainForm').classList.add('hidden');
             document.getElementById('success').classList.remove('hidden');
         } catch (e) {
-            alert("Error al enviar");
+            alert("Error al enviar solicitud");
             btn.disabled = false; btn.textContent = 'Enviar Solicitud Final';
         }
     }
