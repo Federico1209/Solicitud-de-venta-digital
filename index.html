@@ -15,12 +15,12 @@
         .form-group { margin-bottom: 12px; }
         label { display: block; font-size: 10px; font-weight: 600; margin-bottom: 4px; text-transform: uppercase; color: rgba(255,255,255,0.9); }
         input, select, textarea { width: 100%; padding: 10px; border: none; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
-        textarea { height: 80px; resize: none; }
+        textarea { height: 80px; resize: none; font-family: inherit; }
         .chip-group { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
-        .chip { padding: 8px 12px; border: 1px solid rgba(255,255,255,0.3); border-radius: 15px; cursor: pointer; font-size: 12px; background: rgba(255,255,255,0.1); }
+        .chip { padding: 8px 12px; border: 1px solid rgba(255,255,255,0.3); border-radius: 15px; cursor: pointer; font-size: 12px; background: rgba(255,255,255,0.1); transition: 0.3s; }
         .chip.selected { background: var(--accent-green) !important; font-weight: bold; }
         .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 18px; width: calc(100% - 20px); margin: 10px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .preview-img { width: 100%; max-height: 150px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid white; }
+        .preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid white; }
         .hidden { display: none; }
     </style>
 </head>
@@ -35,7 +35,7 @@
             <div class="grid">
                 <div class="form-group">
                     <label>ID Vendedor / Promotor *</label>
-                    <input type="text" id="idVendedor" placeholder="Ingrese su ID">
+                    <input type="text" id="idVendedor" placeholder="Ingrese ID">
                 </div>
                 <div class="form-group">
                     <label>Titular / Grupo</label>
@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="grid">
-                <div class="form-group"><label>DNI (Columna C)</label><input type="number" id="dniInput"></div>
+                <div class="form-group"><label>DNI</label><input type="number" id="dniInput"></div>
                 <div class="form-group"><label>Fecha Nacimiento</label><input type="date" id="fechaNac"></div>
             </div>
             <div class="grid">
@@ -54,10 +54,10 @@
                 <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
             </div>
             <div class="form-group">
-                <label>Dirección 📍</label>
+                <label>Dirección 📍 (Clic icono para ubicar)</label>
                 <div style="display: flex; gap: 5px;">
                     <input type="text" id="domicilio" placeholder="Calle y número">
-                    <button type="button" onclick="obtenerUbicacion()" style="width:50px; cursor:pointer">📍</button>
+                    <button type="button" onclick="obtenerUbicacion()" style="width:50px; cursor:pointer; border-radius:6px; border:none;">📍</button>
                 </div>
             </div>
             <div class="grid">
@@ -75,25 +75,28 @@
         </div>
 
         <div class="bloque-azul">
-            <div class="bloque-titulo">2. Salud</div>
+            <div class="bloque-titulo">2. Antecedentes de Salud</div>
             <div class="form-group">
-                <label>Medicación Diaria</label>
-                <select id="tomaMed" onchange="document.getElementById('medE').style.display=(this.value=='Sí'?'block':'none')">
-                    <option value="No">No</option><option value="Sí">Sí</option>
-                </select>
-                <input type="text" id="medE" class="hidden" style="margin-top:5px" placeholder="¿Cuál?">
+                <label>¿Toma medicación diaria?</label>
+                <select id="tomaMed" onchange="document.getElementById('medE').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
+                <input type="text" id="medE" class="hidden" style="margin-top:5px" placeholder="¿Cuál medicación?">
             </div>
             <div class="form-group">
-                <label>Internación / Cirugías</label>
-                <select id="tuvoInt" onchange="document.getElementById('intE').style.display=(this.value=='Sí'?'block':'none')">
-                    <option value="No">No</option><option value="Sí">Sí</option>
-                </select>
-                <input type="text" id="intE" class="hidden" style="margin-top:5px" placeholder="¿Cuál y cuándo?">
+                <label>¿Tuvo internaciones o cirugías?</label>
+                <select id="tuvoInt" onchange="document.getElementById('intE').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
+                <input type="text" id="intE" class="hidden" style="margin-top:5px" placeholder="¿Cuándo y qué tipo?">
             </div>
             <label>Alergias</label>
             <div class="chip-group" id="alergiaChips">
                 <div class="chip" onclick="this.classList.toggle('selected')">Medicamentos</div>
                 <div class="chip" onclick="this.classList.toggle('selected')">Alimentos</div>
+                <div class="chip" onclick="this.classList.toggle('selected')">Ninguna</div>
+            </div>
+            <label style="margin-top:10px; display:block">Enfermedades Crónicas</label>
+            <div class="chip-group" id="cronicaChips">
+                <div class="chip" onclick="this.classList.toggle('selected')">Diabetes</div>
+                <div class="chip" onclick="this.classList.toggle('selected')">Hipertensión</div>
+                <div class="chip" onclick="this.classList.toggle('selected')">Asma</div>
                 <div class="chip" onclick="this.classList.toggle('selected')">Ninguna</div>
             </div>
         </div>
@@ -108,22 +111,19 @@
 
         <div class="bloque-azul">
             <div class="bloque-titulo">4. Observaciones y Adjuntos</div>
-            <div class="form-group">
-                <label>Observaciones</label>
-                <textarea id="observacionesInput" placeholder="Notas adicionales..."></textarea>
-            </div>
-            <div class="form-group">
+            <textarea id="observacionesInput" placeholder="Aclaraciones sobre el grupo familiar o notas adicionales..."></textarea>
+            <div class="form-group" style="margin-top:15px">
                 <label>Foto DNI / Credencial</label>
-                <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)" style="background:none; color:white">
+                <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)" style="background:none; color:white; padding:0">
                 <img id="imgPreview" class="preview-img">
             </div>
         </div>
 
-        <button class="btn-verde" id="btnEnviar" onclick="enviar()">Enviar Solicitud Final</button>
+        <button class="btn-verde" id="btnEnviar" onclick="enviarSolicitud()">Enviar Solicitud Final</button>
     </div>
 
     <div id="success" class="hidden" style="text-align:center; padding:50px; color:var(--primary-blue);">
-        <h2>¡Enviado con Éxito!</h2>
+        <h2>¡Solicitud Enviada con Éxito!</h2>
         <button onclick="location.reload()" style="padding:10px; cursor:pointer">Nueva Carga</button>
     </div>
 </div>
@@ -137,8 +137,8 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 fotoBase64 = e.target.result; fotoNombre = file.name; fotoMime = file.type;
-                document.getElementById('imgPreview').src = e.target.result;
-                document.getElementById('imgPreview').style.display = 'block';
+                const img = document.getElementById('imgPreview');
+                img.src = e.target.result; img.style.display = 'block';
             };
             reader.readAsDataURL(file);
         }
@@ -154,42 +154,44 @@
         });
     }
 
-    async function enviar() {
+    async function enviarSolicitud() {
         const btn = document.getElementById('btnEnviar');
         btn.textContent = 'Enviando...'; btn.disabled = true;
 
         const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
+        const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
 
         const d = new URLSearchParams();
         
-        // --- VINCULACIÓN EXACTA CON LOS NOMBRES DEL SCRIPT ---
+        // ORDEN DE COLUMNAS (A, B, C...)
         d.append('id_vendedor', document.getElementById('idVendedor').value);      // A
         d.append('tipo_afiliacion', document.getElementById('tipoAfiliacion').value); // B
         d.append('dni', document.getElementById('dniInput').value);                 // C
         d.append('apellido', document.getElementById('apellido').value);            // D
         d.append('nombre', document.getElementById('nombre').value);                // E
-        d.append('fecha_nacimiento', document.getElementById('fechaNac').value);    // F
-        d.append('domicilio', document.getElementById('domicilio').value);           // G
-        d.append('localidad', document.getElementById('localidad').value);           // H
-        d.append('cp', document.getElementById('cp').value);                        // I
-        d.append('celular', document.getElementById('celular').value);              // J
-        d.append('mail', document.getElementById('email').value);                   // K
-        d.append('obra_social', document.getElementById('obraSocial').value);       // L
-        d.append('medicacion', document.getElementById('tomaMed').value === 'Sí' ? document.getElementById('medE').value : 'No'); // M
-        d.append('internacion', document.getElementById('tuvoInt').value === 'Sí' ? document.getElementById('intE').value : 'No'); // N
-        d.append('alergia', alergias || 'Ninguna');                                // O
+        d.append('fecha_nacimiento', document.getElementById('fechaNac').value);
+        d.append('domicilio', document.getElementById('domicilio').value);
+        d.append('localidad', document.getElementById('localidad').value);
+        d.append('cp', document.getElementById('cp').value);
+        d.append('celular', document.getElementById('celular').value);
+        d.append('mail', document.getElementById('email').value);
+        d.append('obra_social', document.getElementById('obraSocial').value);
         
-        // Faltaba el nombre exacto de observaciones
-        d.append('observaciones', document.getElementById('observacionesInput').value); // S
+        d.append('medicacion', document.getElementById('tomaMed').value === 'Sí' ? document.getElementById('medE').value : 'No');
+        d.append('internacion', document.getElementById('tuvoInt').value === 'Sí' ? document.getElementById('intE').value : 'No');
+        d.append('alergia', alergias || 'Ninguna');
+        d.append('enfermedad_cronica', cronicas || 'Ninguna');
         
         d.append('plan', document.getElementById('plan').value);
         d.append('pago', document.getElementById('pago').value);
-        d.append('fotoData', fotoBase64); 
-        d.append('fotoNombre', fotoNombre); 
+        
+        d.append('observaciones', document.getElementById('observacionesInput').value);
+        d.append('fotoData', fotoBase64);
+        d.append('fotoNombre', fotoNombre);
         d.append('fotoMime', fotoMime);
         d.append('fecha_envio', new Date().toLocaleString());
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
 
         try {
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: d });
@@ -197,7 +199,7 @@
             document.getElementById('success').classList.remove('hidden');
             window.scrollTo(0,0);
         } catch (e) {
-            alert("Error al enviar"); btn.disabled = false; btn.textContent = 'Enviar';
+            alert("Error al enviar"); btn.disabled = false; btn.textContent = 'Enviar Solicitud Final';
         }
     }
 </script>
