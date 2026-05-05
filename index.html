@@ -9,7 +9,7 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-body); margin: 0; padding: 10px; }
         .container { background: white; max-width: 600px; margin: auto; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .header { text-align: center; padding: 20px; background: white; border-bottom: 3px solid var(--primary-blue); }
-        .bloque-azul { background-color: var(--primary-blue); color: var(--text-white); padding: 20px; margin: 10px; border-radius: 12px; }
+        .bloque-azul { background-color: var(--primary-blue); color: var(--text-white); padding: 20px; margin: 15px; border-radius: 12px; }
         .bloque-titulo { font-size: 16px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; text-transform: uppercase; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .form-group { margin-bottom: 12px; }
@@ -23,6 +23,11 @@
         .btn-geo { width: 50px; cursor: pointer; border-radius: 6px; border: none; background: white; font-size: 18px; }
         .hidden { display: none; }
         .preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid white; }
+        
+        /* Estilos para Adherentes */
+        .adherente-card { background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px dashed white; }
+        .btn-adherente { background: #ffcc00; color: #004581; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 14px; }
+        .btn-eliminar { background: #ff4444; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 10px; float: right; }
     </style>
 </head>
 <body>
@@ -32,11 +37,14 @@
 
     <div id="mainForm">
         <div class="bloque-azul">
-            <div class="bloque-titulo">1. Datos Personales</div>
+            <div class="bloque-titulo">1. Datos Personales (Titular)</div>
             <div class="grid">
                 <div class="form-group"><label>ID Vendedor / Promotor *</label><input type="text" id="idVendedor" placeholder="Ingrese ID"></div>
-                <div class="form-group"><label>Titular / Grupo</label>
-                    <select id="tipoAfiliacion"><option value="Solo Titular">Solo Titular</option><option value="Grupo Familiar">Grupo Familiar</option></select>
+                <div class="form-group"><label>Tipo Afiliación</label>
+                    <select id="tipoAfiliacion" onchange="toggleGrupoFamiliar()">
+                        <option value="Solo Titular">Solo Titular</option>
+                        <option value="Grupo Familiar">Grupo Familiar</option>
+                    </select>
                 </div>
             </div>
             <div class="grid">
@@ -48,7 +56,7 @@
                 <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
             </div>
             <div class="form-group">
-                <label>Dirección (📍 Clic icono para ubicar)</label>
+                <label>Dirección 📍 (Clic icono para ubicar)</label>
                 <div style="display: flex; gap: 5px;">
                     <input type="text" id="domicilio" placeholder="Calle y número">
                     <button type="button" class="btn-geo" onclick="obtenerUbicacion()">📍</button>
@@ -63,13 +71,18 @@
                 <div class="form-group"><label>Email</label><input type="email" id="email"></div>
             </div>
             <div class="form-group">
-                <label>Obra Social</label>
+                <label>Obra Social Titular</label>
                 <input list="obras" id="obraSocial"><datalist id="obras"><option value="Particular"><option value="PAMI"><option value="IOMA"><option value="OSDE"></datalist>
+            </div>
+
+            <div id="seccionAdherentes" class="hidden">
+                <div id="listaAdherentes"></div>
+                <button type="button" class="btn-adherente" onclick="agregarAdherente()">+ AGREGAR FAMILIAR ADHERENTE</button>
             </div>
         </div>
 
         <div class="bloque-azul">
-            <div class="bloque-titulo">2. Antecedentes de Salud</div>
+            <div class="bloque-titulo">2. Salud (Titular)</div>
             <div class="form-group">
                 <label>¿Toma medicación diaria?</label>
                 <select id="tomaMed" onchange="document.getElementById('medE').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
@@ -105,9 +118,9 @@
 
         <div class="bloque-azul">
             <div class="bloque-titulo">4. Observaciones y Adjuntos</div>
-            <textarea id="observacionesInput" placeholder="Aclaraciones adicionales..."></textarea>
+            <textarea id="observacionesInput" placeholder="Aclaraciones o notas adicionales..."></textarea>
             <div class="form-group" style="margin-top:15px">
-                <label>Foto DNI / Credencial</label>
+                <label>Foto DNI / Credencial Titular</label>
                 <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)" style="background:none; color:white; padding:0">
                 <img id="imgPreview" class="preview-img">
             </div>
@@ -124,6 +137,44 @@
 
 <script>
     let fotoBase64 = "", fotoNombre = "", fotoMime = "";
+
+    function toggleGrupoFamiliar() {
+        const seccion = document.getElementById('seccionAdherentes');
+        const tipo = document.getElementById('tipoAfiliacion').value;
+        if (tipo === "Grupo Familiar") {
+            seccion.classList.remove('hidden');
+        } else {
+            seccion.classList.add('hidden');
+            document.getElementById('listaAdherentes').innerHTML = "";
+        }
+    }
+
+    function agregarAdherente() {
+        const contenedor = document.getElementById('listaAdherentes');
+        const div = document.createElement('div');
+        div.className = 'adherente-card';
+        div.innerHTML = `
+            <button type="button" class="btn-eliminar" onclick="this.parentElement.remove()">Eliminar X</button>
+            <p style="color:#ffcc00; margin-top:0; font-size:12px; font-weight:bold;">DATOS FAMILIAR ADHERENTE</p>
+            <div class="grid">
+                <div class="form-group"><label>DNI</label><input type="number" class="adh-dni"></div>
+                <div class="form-group"><label>Fecha Nac.</label><input type="date" class="adh-fnac"></div>
+            </div>
+            <div class="grid">
+                <div class="form-group"><label>Apellido</label><input type="text" class="adh-apellido"></div>
+                <div class="form-group"><label>Nombre</label><input type="text" class="adh-nombre"></div>
+            </div>
+            <div class="form-group">
+                <label>Obra Social Adherente</label>
+                <input type="text" class="adh-os">
+            </div>
+            <div class="form-group">
+                <label>Salud (Medicación, Internación, Alergias, Crónicas)</label>
+                <textarea class="adh-salud" placeholder="Detalles de salud del familiar..."></textarea>
+            </div>
+        `;
+        contenedor.appendChild(div);
+    }
 
     function toggleChip(el) {
         if (el.innerText === "Ninguna") {
@@ -150,7 +201,6 @@
 
     function obtenerUbicacion() {
         if (!navigator.geolocation) return alert("GPS no disponible");
-        document.getElementById('domicilio').placeholder = "Buscando...";
         navigator.geolocation.getCurrentPosition(async (pos) => {
             try {
                 const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
@@ -164,10 +214,23 @@
 
     async function enviarSolicitud() {
         const btn = document.getElementById('btnEnviar');
-        btn.textContent = 'Enviando...'; btn.disabled = true;
+        btn.textContent = 'Enviando Datos...'; btn.disabled = true;
 
         const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
         const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
+
+        // Capturar datos de adherentes
+        const adherentes = [];
+        document.querySelectorAll('.adherente-card').forEach(card => {
+            adherentes.push({
+                dni: card.querySelector('.adh-dni').value,
+                fnac: card.querySelector('.adh-fnac').value,
+                apellido: card.querySelector('.adh-apellido').value,
+                nombre: card.querySelector('.adh-nombre').value,
+                os: card.querySelector('.adh-os').value,
+                salud: card.querySelector('.adh-salud').value
+            });
+        });
 
         const d = new URLSearchParams();
         d.append('id_vendedor', document.getElementById('idVendedor').value);
@@ -193,6 +256,9 @@
         d.append('fotoNombre', fotoNombre);
         d.append('fotoMime', fotoMime);
         d.append('fecha_envio', new Date().toLocaleString());
+        
+        // Adjuntar la lista de familiares como JSON
+        d.append('adherentes', JSON.stringify(adherentes));
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
 
