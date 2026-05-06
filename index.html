@@ -38,7 +38,7 @@
         <div class="bloque-azul">
             <div class="bloque-titulo">1. Datos Personales (Titular)</div>
             <div class="grid">
-                <div class="form-group"><label>ID Vendedor / Promotor *</label><input type="text" id="idVendedor" placeholder="Ingrese ID"></div>
+                <div class="form-group"><label>ID Vendedor *</label><input type="text" id="idVendedor"></div>
                 <div class="form-group"><label>Tipo Afiliación</label>
                     <select id="tipoAfiliacion" onchange="toggleGrupoFamiliar()">
                         <option value="Solo Titular">Solo Titular</option>
@@ -74,26 +74,25 @@
         <div class="bloque-azul">
             <div class="bloque-titulo">2. Salud (Titular)</div>
             <div class="form-group">
-                <label>¿Toma medicación diaria?</label>
+                <label>¿Toma medicación?</label>
                 <select id="tomaMed" onchange="document.getElementById('medE').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
-                <input type="text" id="medE" class="hidden" style="margin-top:5px" placeholder="¿Cuál medicación?">
+                <input type="text" id="medE" class="hidden" placeholder="¿Cuál?">
             </div>
             <div class="form-group">
-                <label>¿Tuvo internaciones o cirugías?</label>
+                <label>¿Internaciones/Cirugías?</label>
                 <select id="tuvoInt" onchange="document.getElementById('intE').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
-                <input type="text" id="intE" class="hidden" style="margin-top:5px" placeholder="¿Cuándo y qué tipo?">
+                <input type="text" id="intE" class="hidden" placeholder="Detalle">
             </div>
-            
-            <label>Alergias (Titular)</label>
+            <label>Alergias</label>
             <div class="chip-group" id="alergiaChips">
                 <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Medicamentos</div>
                 <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Alimentos</div>
                 <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Ninguna</div>
                 <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Otro</div>
             </div>
-            <input type="text" id="otroAlergia" class="hidden" style="margin-top:10px" placeholder="Especifique alergia manual">
+            <input type="text" id="otroAlergia" class="hidden" placeholder="Especifique alergia">
 
-            <label style="margin-top:10px; display:block">Enfermedades Crónicas (Titular)</label>
+            <label style="margin-top:10px; display:block">Enfermedades Crónicas</label>
             <div class="chip-group" id="cronicaChips">
                 <div class="chip" onclick="toggleChip(this, 'otroCronica')">Diabetes</div>
                 <div class="chip" onclick="toggleChip(this, 'otroCronica')">Hipertensión</div>
@@ -101,17 +100,17 @@
                 <div class="chip" onclick="toggleChip(this, 'otroCronica')">Ninguna</div>
                 <div class="chip" onclick="toggleChip(this, 'otroCronica')">Otro</div>
             </div>
-            <input type="text" id="otroCronica" class="hidden" style="margin-top:10px" placeholder="Especifique enfermedad manual">
+            <input type="text" id="otroCronica" class="hidden" placeholder="Especifique enfermedad">
         </div>
 
         <div class="bloque-azul">
             <div class="bloque-titulo">3. Plan y Pago</div>
             <div class="grid">
                 <div class="form-group"><label>Plan</label><select id="plan"><option>Global</option><option>Vital</option></select></div>
-                <div class="form-group"><label>Modalidad de pago</label><select id="pago"><option>Débito</option><option>Efectivo</option></select></div>
+                <div class="form-group"><label>Pago</label><select id="pago"><option>Débito</option><option>Efectivo</option></select></div>
             </div>
-            <textarea id="observacionesInput" placeholder="Aclaraciones o notas adicionales..."></textarea>
-            <div class="form-group" style="margin-top:15px">
+            <textarea id="observacionesInput" placeholder="Notas adicionales..."></textarea>
+            <div class="form-group" style="margin-top:10px">
                 <label>Foto DNI Titular</label>
                 <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)">
                 <img id="imgPreview" class="preview-img">
@@ -121,8 +120,8 @@
         <div class="checkbox-container">
             <input type="checkbox" id="aceptaTerminos">
             <label for="aceptaTerminos">
-                Declaro bajo juramento que los datos aquí consignados son verídicos. 
-                Acepto los <a href="https://drive.google.com/file/d/1RraQ6EktGUvKIv_f0yxvvux0ktjjOeGH/view" target="_blank" style="color:#004581; font-weight:bold;">Términos y Condiciones</a> de Previnca Salud.
+                Declaro bajo juramento que los datos son verídicos. 
+                Acepto los <a href="https://drive.google.com/file/d/1RraQ6EktGUvKIv_f0yxvvux0ktjjOeGH/view" target="_blank">Términos y Condiciones</a>.
             </label>
         </div>
 
@@ -130,8 +129,8 @@
     </div>
 
     <div id="success" class="hidden" style="text-align:center; padding:50px; color:var(--primary-blue);">
-        <h2>¡Solicitud Enviada con Éxito!</h2>
-        <button onclick="location.reload()" style="padding:10px; cursor:pointer">Nueva Carga</button>
+        <h2>¡Enviado con Éxito!</h2>
+        <button onclick="location.reload()">Nueva Carga</button>
     </div>
 </div>
 
@@ -139,9 +138,8 @@
     let fotoBase64 = "", fotoNombre = "", fotoMime = "";
 
     function toggleGrupoFamiliar() {
-        const seccion = document.getElementById('seccionAdherentes');
         const tipo = document.getElementById('tipoAfiliacion').value;
-        seccion.classList.toggle('hidden', tipo !== "Grupo Familiar");
+        document.getElementById('seccionAdherentes').classList.toggle('hidden', tipo !== "Grupo Familiar");
     }
 
     function agregarAdherente() {
@@ -149,11 +147,11 @@
         const div = document.createElement('div');
         div.className = 'adherente-card';
         div.innerHTML = `
-            <button type="button" class="btn-eliminar" onclick="this.parentElement.remove()">Eliminar X</button>
-            <p style="color:#ffcc00; margin-top:0; font-size:12px; font-weight:bold;">FAMILIAR ADHERENTE</p>
+            <button type="button" class="btn-eliminar" onclick="this.parentElement.remove()">X</button>
+            <p style="color:#ffcc00; font-weight:bold; font-size:12px">FAMILIAR ADHERENTE</p>
             <div class="grid">
                 <div class="form-group"><label>DNI</label><input type="number" class="adh-dni"></div>
-                <div class="form-group"><label>Fecha Nac.</label><input type="date" class="adh-fnac"></div>
+                <div class="form-group"><label>F. Nac</label><input type="date" class="adh-fnac"></div>
             </div>
             <div class="grid">
                 <div class="form-group"><label>Apellido</label><input type="text" class="adh-apellido"></div>
@@ -163,14 +161,13 @@
                 <div class="form-group"><label>Celular</label><input type="tel" class="adh-tel"></div>
                 <div class="form-group"><label>Email</label><input type="email" class="adh-mail"></div>
             </div>
-            <div class="form-group"><label>Obra Social Adherente</label><input type="text" class="adh-os"></div>
-            <div class="form-group"><label>Salud / Medicación / Otros</label>
-            <textarea class="adh-salud" placeholder="Antecedentes de salud del familiar..."></textarea></div>
+            <div class="form-group"><label>Obra Social</label><input type="text" class="adh-os"></div>
+            <textarea class="adh-salud" placeholder="Antecedentes de salud..."></textarea>
         `;
         contenedor.appendChild(div);
     }
 
-    function toggleChip(el, inputOtroId) {
+    function toggleChip(el, inputId) {
         if (el.innerText === "Ninguna") {
             Array.from(el.parentElement.children).forEach(c => c.classList.remove('selected'));
         } else {
@@ -178,66 +175,44 @@
             if (ning) ning.classList.remove('selected');
         }
         el.classList.toggle('selected');
-        
-        const chips = Array.from(el.parentElement.children);
-        const esOtroSelected = chips.some(c => c.innerText === "Otro" && c.classList.contains('selected'));
-        document.getElementById(inputOtroId).style.display = esOtroSelected ? 'block' : 'none';
+        const esOtro = Array.from(el.parentElement.children).some(c => c.innerText === "Otro" && c.classList.contains('selected'));
+        document.getElementById(inputId).style.display = esOtro ? 'block' : 'none';
     }
 
     function previsualizar(input) {
         const file = input.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = (e) => {
                 fotoBase64 = e.target.result; fotoNombre = file.name; fotoMime = file.type;
-                const img = document.getElementById('imgPreview');
-                img.src = e.target.result; img.style.display = 'block';
+                document.getElementById('imgPreview').src = e.target.result;
+                document.getElementById('imgPreview').style.display = 'block';
             };
             reader.readAsDataURL(file);
         }
     }
 
     async function enviarSolicitud() {
-        if (!document.getElementById('aceptaTerminos').checked) {
-            alert("Debe aceptar los términos y condiciones.");
-            return;
-        }
-
+        if (!document.getElementById('aceptaTerminos').checked) return alert("Acepte los términos.");
         const btn = document.getElementById('btnEnviar');
-        btn.textContent = 'Procesando...'; btn.disabled = true;
+        btn.textContent = 'Enviando...'; btn.disabled = true;
 
-        // Procesar Alergias
-        let alergiasArray = Array.from(document.querySelectorAll('#alergiaChips .selected'))
-                                .map(c => c.innerText)
-                                .filter(t => t !== "Otro");
-        if (document.getElementById('otroAlergia').style.display === 'block') {
-            alergiasArray.push(document.getElementById('otroAlergia').value);
-        }
-        let alergiasStr = alergiasArray.join(', ');
+        const getChips = (selector, inputId) => {
+            let res = Array.from(document.querySelectorAll(selector + ' .selected')).map(c => c.innerText).filter(t => t !== "Otro").join(', ');
+            if (document.getElementById(inputId).style.display === 'block') res += (res ? ", " : "") + document.getElementById(inputId).value;
+            return res || "Ninguna";
+        };
 
-        // Procesar Crónicas
-        let cronicasArray = Array.from(document.querySelectorAll('#cronicaChips .selected'))
-                                .map(c => c.innerText)
-                                .filter(t => t !== "Otro");
-        if (document.getElementById('otroCronica').style.display === 'block') {
-            cronicasArray.push(document.getElementById('otroCronica').value);
-        }
-        let cronicasStr = cronicasArray.join(', ');
-
-        // Recolectar Adherentes
-        const adherentes = [];
-        document.querySelectorAll('.adherente-card').forEach(card => {
-            adherentes.push({
-                dni: card.querySelector('.adh-dni').value,
-                fnac: card.querySelector('.adh-fnac').value,
-                apellido: card.querySelector('.adh-apellido').value,
-                nombre: card.querySelector('.adh-nombre').value,
-                tel: card.querySelector('.adh-tel').value,
-                mail: card.querySelector('.adh-mail').value,
-                os: card.querySelector('.adh-os').value,
-                salud: card.querySelector('.adh-salud').value
-            });
-        });
+        const adherentes = Array.from(document.querySelectorAll('.adherente-card')).map(card => ({
+            dni: card.querySelector('.adh-dni').value,
+            fnac: card.querySelector('.adh-fnac').value,
+            apellido: card.querySelector('.adh-apellido').value,
+            nombre: card.querySelector('.adh-nombre').value,
+            tel: card.querySelector('.adh-tel').value,
+            mail: card.querySelector('.adh-mail').value,
+            os: card.querySelector('.adh-os').value,
+            salud: card.querySelector('.adh-salud').value
+        }));
 
         const d = new URLSearchParams();
         d.append('id_vendedor', document.getElementById('idVendedor').value);
@@ -254,8 +229,8 @@
         d.append('obra_social', document.getElementById('obraSocial').value);
         d.append('medicacion', document.getElementById('tomaMed').value === 'Sí' ? document.getElementById('medE').value : 'No');
         d.append('internacion', document.getElementById('tuvoInt').value === 'Sí' ? document.getElementById('intE').value : 'No');
-        d.append('alergia', alergiasStr || 'Ninguna');
-        d.append('enfermedad_cronica', cronicasStr || 'Ninguna');
+        d.append('alergia', getChips('#alergiaChips', 'otroAlergia'));
+        d.append('enfermedad_cronica', getChips('#cronicaChips', 'otroCronica'));
         d.append('plan', document.getElementById('plan').value);
         d.append('pago', document.getElementById('pago').value);
         d.append('observaciones', document.getElementById('observacionesInput').value);
@@ -265,15 +240,14 @@
         d.append('fecha_envio', new Date().toLocaleString());
         d.append('adherentes', JSON.stringify(adherentes));
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
 
         try {
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: d });
             document.getElementById('mainForm').classList.add('hidden');
             document.getElementById('success').classList.remove('hidden');
-            window.scrollTo(0,0);
         } catch (e) {
-            alert("Error de conexión");
+            alert("Error de envío.");
             btn.disabled = false; btn.textContent = 'Enviar Solicitud Final';
         }
     }
