@@ -28,6 +28,12 @@
         .adherente-card { background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px dashed white; }
         .btn-adherente { background: #ffcc00; color: #004581; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 14px; }
         .btn-eliminar { background: #ff4444; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 10px; float: right; }
+        
+        /* Checkbox estilo */
+        .checkbox-container { display: flex; align-items: flex-start; gap: 10px; background: #f8f9fa; color: #333; padding: 15px; border-radius: 10px; margin: 15px; border: 1px solid #ddd; }
+        .checkbox-container input { width: 20px; height: 20px; cursor: pointer; }
+        .checkbox-container label { color: #333; text-transform: none; font-size: 12px; font-weight: normal; line-height: 1.4; }
+        .checkbox-container a { color: var(--primary-blue); font-weight: bold; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -126,6 +132,14 @@
             </div>
         </div>
 
+        <div class="checkbox-container">
+            <input type="checkbox" id="aceptaTerminos">
+            <label for="aceptaTerminos">
+                Declaro bajo juramento que los datos aquí consignados son verídicos y que no he omitido información. 
+                Acepto los <a href="https://previncasalud.com.ar/terminos" target="_blank">Términos y Condiciones</a> de Previnca Salud.
+            </label>
+        </div>
+
         <button class="btn-verde" id="btnEnviar" onclick="enviarSolicitud()">Enviar Solicitud Final</button>
     </div>
 
@@ -164,14 +178,9 @@
                 <div class="form-group"><label>Apellido</label><input type="text" class="adh-apellido"></div>
                 <div class="form-group"><label>Nombre</label><input type="text" class="adh-nombre"></div>
             </div>
-            <div class="form-group">
-                <label>Obra Social Adherente</label>
-                <input type="text" class="adh-os">
-            </div>
-            <div class="form-group">
-                <label>Salud (Medicación, Internación, Alergias, Crónicas)</label>
-                <textarea class="adh-salud" placeholder="Detalles de salud del familiar..."></textarea>
-            </div>
+            <div class="form-group"><label>Obra Social Adherente</label><input type="text" class="adh-os"></div>
+            <div class="form-group"><label>Salud (Medicación, Internación, Alergias, Crónicas)</label>
+            <textarea class="adh-salud" placeholder="Detalles de salud del familiar..."></textarea></div>
         `;
         contenedor.appendChild(div);
     }
@@ -213,13 +222,18 @@
     }
 
     async function enviarSolicitud() {
+        // Validar términos
+        if (!document.getElementById('aceptaTerminos').checked) {
+            alert("Debe aceptar los términos y condiciones para enviar la solicitud.");
+            return;
+        }
+
         const btn = document.getElementById('btnEnviar');
         btn.textContent = 'Enviando Datos...'; btn.disabled = true;
 
         const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
         const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
 
-        // Capturar datos de adherentes
         const adherentes = [];
         document.querySelectorAll('.adherente-card').forEach(card => {
             adherentes.push({
@@ -256,10 +270,9 @@
         d.append('fotoNombre', fotoNombre);
         d.append('fotoMime', fotoMime);
         d.append('fecha_envio', new Date().toLocaleString());
-        
-        // Adjuntar la lista de familiares como JSON
         d.append('adherentes', JSON.stringify(adherentes));
 
+        // URL DE TU SCRIPT (Asegúrate que coincida)
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
 
         try {
