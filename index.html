@@ -20,7 +20,6 @@
         .chip { padding: 8px 12px; border: 1px solid rgba(255,255,255,0.3); border-radius: 15px; cursor: pointer; font-size: 12px; background: rgba(255,255,255,0.1); transition: 0.3s; user-select: none; }
         .chip.selected { background: var(--accent-green) !important; color: white !important; font-weight: bold; }
         .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 18px; width: calc(100% - 20px); margin: 10px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-geo { width: 50px; cursor: pointer; border-radius: 6px; border: none; background: white; font-size: 18px; }
         .hidden { display: none; }
         .preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid white; }
         
@@ -62,11 +61,8 @@
                 <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
             </div>
             <div class="form-group">
-                <label>Dirección 📍 (Clic icono para ubicar)</label>
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="domicilio" placeholder="Calle y número">
-                    <button type="button" class="btn-geo" onclick="obtenerUbicacion()">📍</button>
-                </div>
+                <label>Dirección</label>
+                <input type="text" id="domicilio" placeholder="Calle y número">
             </div>
             <div class="grid">
                 <div class="form-group"><label>Localidad</label><input type="text" id="localidad"></div>
@@ -78,7 +74,7 @@
             </div>
             <div class="form-group">
                 <label>Obra Social Titular</label>
-                <input list="obras" id="obraSocial"><datalist id="obras"><option value="Particular"><option value="PAMI"><option value="IOMA"><option value="OSDE"></datalist>
+                <input type="text" id="obraSocial">
             </div>
 
             <div id="seccionAdherentes" class="hidden">
@@ -99,14 +95,8 @@
                 <select id="tuvoInt" onchange="document.getElementById('intE').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
                 <input type="text" id="intE" class="hidden" style="margin-top:5px" placeholder="¿Cuándo y qué tipo?">
             </div>
-            <label>Alergias</label>
-            <div class="chip-group" id="alergiaChips">
-                <div class="chip" onclick="toggleChip(this)">Medicamentos</div>
-                <div class="chip" onclick="toggleChip(this)">Alimentos</div>
-                <div class="chip" onclick="toggleChip(this)">Ninguna</div>
-            </div>
-            <label style="margin-top:10px; display:block">Enfermedades Crónicas</label>
-            <div class="chip-group" id="cronicaChips">
+            <label>Alergias / Crónicas (Titular)</label>
+            <div class="chip-group" id="saludChips">
                 <div class="chip" onclick="toggleChip(this)">Diabetes</div>
                 <div class="chip" onclick="toggleChip(this)">Hipertensión</div>
                 <div class="chip" onclick="toggleChip(this)">Asma</div>
@@ -126,7 +116,7 @@
             <div class="bloque-titulo">4. Observaciones y Adjuntos</div>
             <textarea id="observacionesInput" placeholder="Aclaraciones o notas adicionales..."></textarea>
             <div class="form-group" style="margin-top:15px">
-                <label>Foto DNI / Credencial Titular</label>
+                <label>Foto DNI Titular</label>
                 <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)" style="background:none; color:white; padding:0">
                 <img id="imgPreview" class="preview-img">
             </div>
@@ -135,8 +125,8 @@
         <div class="checkbox-container">
             <input type="checkbox" id="aceptaTerminos">
             <label for="aceptaTerminos">
-                Declaro bajo juramento que los datos aquí consignados son verídicos y que no he omitido información. 
-                Acepto los <a href="https://previncasalud.com.ar/terminos" target="_blank">Términos y Condiciones</a> de Previnca Salud.
+                Declaro bajo juramento que los datos aquí consignados son verídicos. 
+                Acepto los <a href="https://drive.google.com/file/d/1RraQ6EktGUvKIv_f0yxvvux0ktjjOeGH/view" target="_blank">Términos y Condiciones</a> de Previnca Salud.
             </label>
         </div>
 
@@ -169,7 +159,7 @@
         div.className = 'adherente-card';
         div.innerHTML = `
             <button type="button" class="btn-eliminar" onclick="this.parentElement.remove()">Eliminar X</button>
-            <p style="color:#ffcc00; margin-top:0; font-size:12px; font-weight:bold;">DATOS FAMILIAR ADHERENTE</p>
+            <p style="color:#ffcc00; margin-top:0; font-size:12px; font-weight:bold;">FAMILIAR ADHERENTE</p>
             <div class="grid">
                 <div class="form-group"><label>DNI</label><input type="number" class="adh-dni"></div>
                 <div class="form-group"><label>Fecha Nac.</label><input type="date" class="adh-fnac"></div>
@@ -178,9 +168,13 @@
                 <div class="form-group"><label>Apellido</label><input type="text" class="adh-apellido"></div>
                 <div class="form-group"><label>Nombre</label><input type="text" class="adh-nombre"></div>
             </div>
-            <div class="form-group"><label>Obra Social Adherente</label><input type="text" class="adh-os"></div>
-            <div class="form-group"><label>Salud (Medicación, Internación, Alergias, Crónicas)</label>
-            <textarea class="adh-salud" placeholder="Detalles de salud del familiar..."></textarea></div>
+            <div class="grid">
+                <div class="form-group"><label>Celular</label><input type="tel" class="adh-tel"></div>
+                <div class="form-group"><label>Email</label><input type="email" class="adh-mail"></div>
+            </div>
+            <div class="form-group"><label>Obra Social</label><input type="text" class="adh-os"></div>
+            <div class="form-group"><label>Salud / Medicación</label>
+            <textarea class="adh-salud" placeholder="Antecedentes del familiar..."></textarea></div>
         `;
         contenedor.appendChild(div);
     }
@@ -208,31 +202,16 @@
         }
     }
 
-    function obtenerUbicacion() {
-        if (!navigator.geolocation) return alert("GPS no disponible");
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
-                const d = await res.json();
-                document.getElementById('domicilio').value = (d.address.road || "") + " " + (d.address.house_number || "");
-                document.getElementById('localidad').value = d.address.city || d.address.town || "";
-                document.getElementById('cp').value = d.address.postcode || "";
-            } catch (e) { alert("Error al obtener dirección"); }
-        });
-    }
-
     async function enviarSolicitud() {
-        // Validar términos
         if (!document.getElementById('aceptaTerminos').checked) {
-            alert("Debe aceptar los términos y condiciones para enviar la solicitud.");
+            alert("Debe aceptar los términos y condiciones.");
             return;
         }
 
         const btn = document.getElementById('btnEnviar');
         btn.textContent = 'Enviando Datos...'; btn.disabled = true;
 
-        const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
-        const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
+        const saludTit = Array.from(document.querySelectorAll('#saludChips .selected')).map(c => c.innerText).join(', ');
 
         const adherentes = [];
         document.querySelectorAll('.adherente-card').forEach(card => {
@@ -241,6 +220,8 @@
                 fnac: card.querySelector('.adh-fnac').value,
                 apellido: card.querySelector('.adh-apellido').value,
                 nombre: card.querySelector('.adh-nombre').value,
+                tel: card.querySelector('.adh-tel').value,
+                mail: card.querySelector('.adh-mail').value,
                 os: card.querySelector('.adh-os').value,
                 salud: card.querySelector('.adh-salud').value
             });
@@ -261,8 +242,7 @@
         d.append('obra_social', document.getElementById('obraSocial').value);
         d.append('medicacion', document.getElementById('tomaMed').value === 'Sí' ? document.getElementById('medE').value : 'No');
         d.append('internacion', document.getElementById('tuvoInt').value === 'Sí' ? document.getElementById('intE').value : 'No');
-        d.append('alergia', alergias || 'Ninguna');
-        d.append('enfermedad_cronica', cronicas || 'Ninguna');
+        d.append('salud_tit', saludTit || 'Ninguna');
         d.append('plan', document.getElementById('plan').value);
         d.append('pago', document.getElementById('pago').value);
         d.append('observaciones', document.getElementById('observacionesInput').value);
@@ -272,7 +252,6 @@
         d.append('fecha_envio', new Date().toLocaleString());
         d.append('adherentes', JSON.stringify(adherentes));
 
-        // URL DE TU SCRIPT (Asegúrate que coincida)
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
 
         try {
