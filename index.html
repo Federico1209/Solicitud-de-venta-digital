@@ -91,7 +91,7 @@
                 <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Ninguna</div>
                 <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Otro</div>
             </div>
-            <input type="text" id="otroAlergia" class="hidden" style="margin-top:10px" placeholder="Especifique alergia">
+            <input type="text" id="otroAlergia" class="hidden" style="margin-top:10px" placeholder="Especifique alergia manual">
 
             <label style="margin-top:10px; display:block">Enfermedades Crónicas (Titular)</label>
             <div class="chip-group" id="cronicaChips">
@@ -101,7 +101,7 @@
                 <div class="chip" onclick="toggleChip(this, 'otroCronica')">Ninguna</div>
                 <div class="chip" onclick="toggleChip(this, 'otroCronica')">Otro</div>
             </div>
-            <input type="text" id="otroCronica" class="hidden" style="margin-top:10px" placeholder="Especifique enfermedad">
+            <input type="text" id="otroCronica" class="hidden" style="margin-top:10px" placeholder="Especifique enfermedad manual">
         </div>
 
         <div class="bloque-azul">
@@ -164,7 +164,7 @@
                 <div class="form-group"><label>Email</label><input type="email" class="adh-mail"></div>
             </div>
             <div class="form-group"><label>Obra Social Adherente</label><input type="text" class="adh-os"></div>
-            <div class="form-group"><label>Salud / Medicación</label>
+            <div class="form-group"><label>Salud / Medicación / Otros</label>
             <textarea class="adh-salud" placeholder="Antecedentes de salud del familiar..."></textarea></div>
         `;
         contenedor.appendChild(div);
@@ -179,8 +179,8 @@
         }
         el.classList.toggle('selected');
         
-        // Mostrar/Ocultar campo "Otro"
-        const esOtroSelected = Array.from(el.parentElement.children).some(c => c.innerText === "Otro" && c.classList.contains('selected'));
+        const chips = Array.from(el.parentElement.children);
+        const esOtroSelected = chips.some(c => c.innerText === "Otro" && c.classList.contains('selected'));
         document.getElementById(inputOtroId).style.display = esOtroSelected ? 'block' : 'none';
     }
 
@@ -204,18 +204,25 @@
         }
 
         const btn = document.getElementById('btnEnviar');
-        btn.textContent = 'Enviando Datos...'; btn.disabled = true;
+        btn.textContent = 'Procesando...'; btn.disabled = true;
 
-        // Procesar Chips + "Otro"
-        let alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).filter(t => t !== "Otro").join(', ');
+        // Procesar Alergias
+        let alergiasArray = Array.from(document.querySelectorAll('#alergiaChips .selected'))
+                                .map(c => c.innerText)
+                                .filter(t => t !== "Otro");
         if (document.getElementById('otroAlergia').style.display === 'block') {
-            alergias += (alergias ? ", " : "") + document.getElementById('otroAlergia').value;
+            alergiasArray.push(document.getElementById('otroAlergia').value);
         }
+        let alergiasStr = alergiasArray.join(', ');
 
-        let cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).filter(t => t !== "Otro").join(', ');
+        // Procesar Crónicas
+        let cronicasArray = Array.from(document.querySelectorAll('#cronicaChips .selected'))
+                                .map(c => c.innerText)
+                                .filter(t => t !== "Otro");
         if (document.getElementById('otroCronica').style.display === 'block') {
-            cronicas += (cronicas ? ", " : "") + document.getElementById('otroCronica').value;
+            cronicasArray.push(document.getElementById('otroCronica').value);
         }
+        let cronicasStr = cronicasArray.join(', ');
 
         // Recolectar Adherentes
         const adherentes = [];
@@ -247,8 +254,8 @@
         d.append('obra_social', document.getElementById('obraSocial').value);
         d.append('medicacion', document.getElementById('tomaMed').value === 'Sí' ? document.getElementById('medE').value : 'No');
         d.append('internacion', document.getElementById('tuvoInt').value === 'Sí' ? document.getElementById('intE').value : 'No');
-        d.append('alergia', alergias || 'Ninguna');
-        d.append('enfermedad_cronica', cronicas || 'Ninguna');
+        d.append('alergia', alergiasStr || 'Ninguna');
+        d.append('enfermedad_cronica', cronicasStr || 'Ninguna');
         d.append('plan', document.getElementById('plan').value);
         d.append('pago', document.getElementById('pago').value);
         d.append('observaciones', document.getElementById('observacionesInput').value);
@@ -266,7 +273,7 @@
             document.getElementById('success').classList.remove('hidden');
             window.scrollTo(0,0);
         } catch (e) {
-            alert("Error al enviar");
+            alert("Error de conexión");
             btn.disabled = false; btn.textContent = 'Enviar Solicitud Final';
         }
     }
