@@ -26,9 +26,7 @@
         .btn-adherente { background: #ffcc00; color: #004581; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 14px; }
         .btn-eliminar { background: #ff4444; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 10px; float: right; }
         .checkbox-container { display: flex; align-items: flex-start; gap: 10px; background: #f8f9fa; color: #333; padding: 15px; border-radius: 10px; margin: 15px; border: 1px solid #ddd; }
-        .checkbox-container input { width: 20px; height: 20px; cursor: pointer; }
         .checkbox-container label { color: #333; text-transform: none; font-size: 12px; font-weight: normal; line-height: 1.4; }
-        .checkbox-container a { color: var(--primary-blue); font-weight: bold; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -56,7 +54,7 @@
                 <div class="form-group"><label>Apellido</label><input type="text" id="apellido"></div>
                 <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
             </div>
-            <div class="form-group"><label>Dirección</label><input type="text" id="domicilio" placeholder="Calle y número"></div>
+            <div class="form-group"><label>Dirección</label><input type="text" id="domicilio"></div>
             <div class="grid">
                 <div class="form-group"><label>Localidad</label><input type="text" id="localidad"></div>
                 <div class="form-group"><label>Cod Postal</label><input type="text" id="cp"></div>
@@ -88,18 +86,22 @@
             
             <label>Alergias (Titular)</label>
             <div class="chip-group" id="alergiaChips">
-                <div class="chip" onclick="toggleChip(this)">Medicamentos</div>
-                <div class="chip" onclick="toggleChip(this)">Alimentos</div>
-                <div class="chip" onclick="toggleChip(this)">Ninguna</div>
+                <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Medicamentos</div>
+                <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Alimentos</div>
+                <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Ninguna</div>
+                <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Otro</div>
             </div>
+            <input type="text" id="otroAlergia" class="hidden" style="margin-top:10px" placeholder="Especifique alergia">
 
             <label style="margin-top:10px; display:block">Enfermedades Crónicas (Titular)</label>
             <div class="chip-group" id="cronicaChips">
-                <div class="chip" onclick="toggleChip(this)">Diabetes</div>
-                <div class="chip" onclick="toggleChip(this)">Hipertensión</div>
-                <div class="chip" onclick="toggleChip(this)">Asma</div>
-                <div class="chip" onclick="toggleChip(this)">Ninguna</div>
+                <div class="chip" onclick="toggleChip(this, 'otroCronica')">Diabetes</div>
+                <div class="chip" onclick="toggleChip(this, 'otroCronica')">Hipertensión</div>
+                <div class="chip" onclick="toggleChip(this, 'otroCronica')">Asma</div>
+                <div class="chip" onclick="toggleChip(this, 'otroCronica')">Ninguna</div>
+                <div class="chip" onclick="toggleChip(this, 'otroCronica')">Otro</div>
             </div>
+            <input type="text" id="otroCronica" class="hidden" style="margin-top:10px" placeholder="Especifique enfermedad">
         </div>
 
         <div class="bloque-azul">
@@ -120,7 +122,7 @@
             <input type="checkbox" id="aceptaTerminos">
             <label for="aceptaTerminos">
                 Declaro bajo juramento que los datos aquí consignados son verídicos. 
-                Acepto los <a href="https://drive.google.com/file/d/1RraQ6EktGUvKIv_f0yxvvux0ktjjOeGH/view" target="_blank">Términos y Condiciones</a> de Previnca Salud.
+                Acepto los <a href="https://drive.google.com/file/d/1RraQ6EktGUvKIv_f0yxvvux0ktjjOeGH/view" target="_blank" style="color:#004581; font-weight:bold;">Términos y Condiciones</a> de Previnca Salud.
             </label>
         </div>
 
@@ -139,12 +141,7 @@
     function toggleGrupoFamiliar() {
         const seccion = document.getElementById('seccionAdherentes');
         const tipo = document.getElementById('tipoAfiliacion').value;
-        if (tipo === "Grupo Familiar") {
-            seccion.classList.remove('hidden');
-        } else {
-            seccion.classList.add('hidden');
-            document.getElementById('listaAdherentes').innerHTML = "";
-        }
+        seccion.classList.toggle('hidden', tipo !== "Grupo Familiar");
     }
 
     function agregarAdherente() {
@@ -168,12 +165,12 @@
             </div>
             <div class="form-group"><label>Obra Social Adherente</label><input type="text" class="adh-os"></div>
             <div class="form-group"><label>Salud / Medicación</label>
-            <textarea class="adh-salud" placeholder="Detalles de salud del familiar..."></textarea></div>
+            <textarea class="adh-salud" placeholder="Antecedentes de salud del familiar..."></textarea></div>
         `;
         contenedor.appendChild(div);
     }
 
-    function toggleChip(el) {
+    function toggleChip(el, inputOtroId) {
         if (el.innerText === "Ninguna") {
             Array.from(el.parentElement.children).forEach(c => c.classList.remove('selected'));
         } else {
@@ -181,6 +178,10 @@
             if (ning) ning.classList.remove('selected');
         }
         el.classList.toggle('selected');
+        
+        // Mostrar/Ocultar campo "Otro"
+        const esOtroSelected = Array.from(el.parentElement.children).some(c => c.innerText === "Otro" && c.classList.contains('selected'));
+        document.getElementById(inputOtroId).style.display = esOtroSelected ? 'block' : 'none';
     }
 
     function previsualizar(input) {
@@ -203,11 +204,20 @@
         }
 
         const btn = document.getElementById('btnEnviar');
-        btn.textContent = 'Enviando...'; btn.disabled = true;
+        btn.textContent = 'Enviando Datos...'; btn.disabled = true;
 
-        const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
-        const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
+        // Procesar Chips + "Otro"
+        let alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).filter(t => t !== "Otro").join(', ');
+        if (document.getElementById('otroAlergia').style.display === 'block') {
+            alergias += (alergias ? ", " : "") + document.getElementById('otroAlergia').value;
+        }
 
+        let cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).filter(t => t !== "Otro").join(', ');
+        if (document.getElementById('otroCronica').style.display === 'block') {
+            cronicas += (cronicas ? ", " : "") + document.getElementById('otroCronica').value;
+        }
+
+        // Recolectar Adherentes
         const adherentes = [];
         document.querySelectorAll('.adherente-card').forEach(card => {
             adherentes.push({
@@ -237,11 +247,8 @@
         d.append('obra_social', document.getElementById('obraSocial').value);
         d.append('medicacion', document.getElementById('tomaMed').value === 'Sí' ? document.getElementById('medE').value : 'No');
         d.append('internacion', document.getElementById('tuvoInt').value === 'Sí' ? document.getElementById('intE').value : 'No');
-        
-        // AQUÍ SE SEPARAN PARA EL APPS SCRIPT
         d.append('alergia', alergias || 'Ninguna');
         d.append('enfermedad_cronica', cronicas || 'Ninguna');
-        
         d.append('plan', document.getElementById('plan').value);
         d.append('pago', document.getElementById('pago').value);
         d.append('observaciones', document.getElementById('observacionesInput').value);
