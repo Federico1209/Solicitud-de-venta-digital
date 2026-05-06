@@ -22,13 +22,9 @@
         .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 18px; width: calc(100% - 20px); margin: 10px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .hidden { display: none; }
         .preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid white; }
-        
-        /* Estilos para Adherentes */
         .adherente-card { background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px dashed white; }
         .btn-adherente { background: #ffcc00; color: #004581; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 14px; }
         .btn-eliminar { background: #ff4444; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 10px; float: right; }
-        
-        /* Checkbox estilo */
         .checkbox-container { display: flex; align-items: flex-start; gap: 10px; background: #f8f9fa; color: #333; padding: 15px; border-radius: 10px; margin: 15px; border: 1px solid #ddd; }
         .checkbox-container input { width: 20px; height: 20px; cursor: pointer; }
         .checkbox-container label { color: #333; text-transform: none; font-size: 12px; font-weight: normal; line-height: 1.4; }
@@ -60,10 +56,7 @@
                 <div class="form-group"><label>Apellido</label><input type="text" id="apellido"></div>
                 <div class="form-group"><label>Nombre</label><input type="text" id="nombre"></div>
             </div>
-            <div class="form-group">
-                <label>Dirección</label>
-                <input type="text" id="domicilio" placeholder="Calle y número">
-            </div>
+            <div class="form-group"><label>Dirección</label><input type="text" id="domicilio" placeholder="Calle y número"></div>
             <div class="grid">
                 <div class="form-group"><label>Localidad</label><input type="text" id="localidad"></div>
                 <div class="form-group"><label>Cod Postal</label><input type="text" id="cp"></div>
@@ -72,10 +65,7 @@
                 <div class="form-group"><label>Celular</label><input type="tel" id="celular"></div>
                 <div class="form-group"><label>Email</label><input type="email" id="email"></div>
             </div>
-            <div class="form-group">
-                <label>Obra Social Titular</label>
-                <input type="text" id="obraSocial">
-            </div>
+            <div class="form-group"><label>Obra Social Titular</label><input type="text" id="obraSocial"></div>
 
             <div id="seccionAdherentes" class="hidden">
                 <div id="listaAdherentes"></div>
@@ -95,8 +85,16 @@
                 <select id="tuvoInt" onchange="document.getElementById('intE').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
                 <input type="text" id="intE" class="hidden" style="margin-top:5px" placeholder="¿Cuándo y qué tipo?">
             </div>
-            <label>Alergias / Crónicas (Titular)</label>
-            <div class="chip-group" id="saludChips">
+            
+            <label>Alergias (Titular)</label>
+            <div class="chip-group" id="alergiaChips">
+                <div class="chip" onclick="toggleChip(this)">Medicamentos</div>
+                <div class="chip" onclick="toggleChip(this)">Alimentos</div>
+                <div class="chip" onclick="toggleChip(this)">Ninguna</div>
+            </div>
+
+            <label style="margin-top:10px; display:block">Enfermedades Crónicas (Titular)</label>
+            <div class="chip-group" id="cronicaChips">
                 <div class="chip" onclick="toggleChip(this)">Diabetes</div>
                 <div class="chip" onclick="toggleChip(this)">Hipertensión</div>
                 <div class="chip" onclick="toggleChip(this)">Asma</div>
@@ -110,14 +108,10 @@
                 <div class="form-group"><label>Plan</label><select id="plan"><option>Global</option><option>Vital</option></select></div>
                 <div class="form-group"><label>Modalidad de pago</label><select id="pago"><option>Débito</option><option>Efectivo</option></select></div>
             </div>
-        </div>
-
-        <div class="bloque-azul">
-            <div class="bloque-titulo">4. Observaciones y Adjuntos</div>
             <textarea id="observacionesInput" placeholder="Aclaraciones o notas adicionales..."></textarea>
             <div class="form-group" style="margin-top:15px">
                 <label>Foto DNI Titular</label>
-                <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)" style="background:none; color:white; padding:0">
+                <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)">
                 <img id="imgPreview" class="preview-img">
             </div>
         </div>
@@ -172,9 +166,9 @@
                 <div class="form-group"><label>Celular</label><input type="tel" class="adh-tel"></div>
                 <div class="form-group"><label>Email</label><input type="email" class="adh-mail"></div>
             </div>
-            <div class="form-group"><label>Obra Social</label><input type="text" class="adh-os"></div>
+            <div class="form-group"><label>Obra Social Adherente</label><input type="text" class="adh-os"></div>
             <div class="form-group"><label>Salud / Medicación</label>
-            <textarea class="adh-salud" placeholder="Antecedentes del familiar..."></textarea></div>
+            <textarea class="adh-salud" placeholder="Detalles de salud del familiar..."></textarea></div>
         `;
         contenedor.appendChild(div);
     }
@@ -209,9 +203,10 @@
         }
 
         const btn = document.getElementById('btnEnviar');
-        btn.textContent = 'Enviando Datos...'; btn.disabled = true;
+        btn.textContent = 'Enviando...'; btn.disabled = true;
 
-        const saludTit = Array.from(document.querySelectorAll('#saludChips .selected')).map(c => c.innerText).join(', ');
+        const alergias = Array.from(document.querySelectorAll('#alergiaChips .selected')).map(c => c.innerText).join(', ');
+        const cronicas = Array.from(document.querySelectorAll('#cronicaChips .selected')).map(c => c.innerText).join(', ');
 
         const adherentes = [];
         document.querySelectorAll('.adherente-card').forEach(card => {
@@ -242,7 +237,11 @@
         d.append('obra_social', document.getElementById('obraSocial').value);
         d.append('medicacion', document.getElementById('tomaMed').value === 'Sí' ? document.getElementById('medE').value : 'No');
         d.append('internacion', document.getElementById('tuvoInt').value === 'Sí' ? document.getElementById('intE').value : 'No');
-        d.append('salud_tit', saludTit || 'Ninguna');
+        
+        // AQUÍ SE SEPARAN PARA EL APPS SCRIPT
+        d.append('alergia', alergias || 'Ninguna');
+        d.append('enfermedad_cronica', cronicas || 'Ninguna');
+        
         d.append('plan', document.getElementById('plan').value);
         d.append('pago', document.getElementById('pago').value);
         d.append('observaciones', document.getElementById('observacionesInput').value);
@@ -252,7 +251,7 @@
         d.append('fecha_envio', new Date().toLocaleString());
         d.append('adherentes', JSON.stringify(adherentes));
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
 
         try {
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: d });
