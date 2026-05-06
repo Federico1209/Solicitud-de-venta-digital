@@ -22,11 +22,39 @@
         .btn-verde { background-color: var(--accent-green); color: white; border: none; padding: 18px; width: calc(100% - 20px); margin: 10px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .hidden { display: none; }
         .preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; display: none; border: 2px solid white; }
+        
         .adherente-card { background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px dashed white; }
         .btn-adherente { background: #ffcc00; color: #004581; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 14px; }
         .btn-eliminar { background: #ff4444; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 10px; float: right; }
-        .checkbox-container { display: flex; align-items: flex-start; gap: 10px; background: #f8f9fa; color: #333; padding: 15px; border-radius: 10px; margin: 15px; border: 1px solid #ddd; }
-        .checkbox-container label { color: #333; text-transform: none; font-size: 12px; font-weight: normal; line-height: 1.4; }
+
+        /* Estilos optimizados para móviles del Checkbox */
+        .checkbox-container { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            background: #f8f9fa; 
+            color: #333; 
+            padding: 15px; 
+            border-radius: 12px; 
+            margin: 15px 10px; 
+            border: 1px solid #ccd1d6; 
+        }
+        .checkbox-container input { 
+            width: 28px; 
+            height: 28px; 
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .checkbox-container label { 
+            color: #333; 
+            text-transform: none; 
+            font-size: 13px; 
+            font-weight: 500; 
+            line-height: 1.4; 
+            margin: 0;
+            cursor: pointer;
+        }
+        .checkbox-container a { color: var(--primary-blue); font-weight: bold; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -76,7 +104,7 @@
             <div class="form-group">
                 <label>¿Toma medicación?</label>
                 <select id="tomaMed" onchange="document.getElementById('medE').style.display=(this.value=='Sí'?'block':'none')"><option value="No">No</option><option value="Sí">Sí</option></select>
-                <input type="text" id="medE" class="hidden" placeholder="¿Cuál?">
+                <input type="text" id="medE" class="hidden" placeholder="¿Cuál medicación?">
             </div>
             <div class="form-group">
                 <label>¿Internaciones/Cirugías?</label>
@@ -90,7 +118,7 @@
                 <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Ninguna</div>
                 <div class="chip" onclick="toggleChip(this, 'otroAlergia')">Otro</div>
             </div>
-            <input type="text" id="otroAlergia" class="hidden" placeholder="Especifique alergia">
+            <input type="text" id="otroAlergia" class="hidden" style="margin-top:10px" placeholder="Especifique alergia">
 
             <label style="margin-top:10px; display:block">Enfermedades Crónicas</label>
             <div class="chip-group" id="cronicaChips">
@@ -100,7 +128,7 @@
                 <div class="chip" onclick="toggleChip(this, 'otroCronica')">Ninguna</div>
                 <div class="chip" onclick="toggleChip(this, 'otroCronica')">Otro</div>
             </div>
-            <input type="text" id="otroCronica" class="hidden" placeholder="Especifique enfermedad">
+            <input type="text" id="otroCronica" class="hidden" style="margin-top:10px" placeholder="Especifique enfermedad">
         </div>
 
         <div class="bloque-azul">
@@ -109,7 +137,7 @@
                 <div class="form-group"><label>Plan</label><select id="plan"><option>Global</option><option>Vital</option></select></div>
                 <div class="form-group"><label>Pago</label><select id="pago"><option>Débito</option><option>Efectivo</option></select></div>
             </div>
-            <textarea id="observacionesInput" placeholder="Notas adicionales..."></textarea>
+            <textarea id="observacionesInput" placeholder="Aclaraciones..."></textarea>
             <div class="form-group" style="margin-top:10px">
                 <label>Foto DNI Titular</label>
                 <input type="file" id="fotoInput" accept="image/*" onchange="previsualizar(this)">
@@ -117,11 +145,11 @@
             </div>
         </div>
 
-        <div class="checkbox-container">
-            <input type="checkbox" id="aceptaTerminos">
+        <div class="checkbox-container" onclick="document.getElementById('aceptaTerminos').click()">
+            <input type="checkbox" id="aceptaTerminos" onclick="event.stopPropagation()">
             <label for="aceptaTerminos">
                 Declaro bajo juramento que los datos son verídicos. 
-                Acepto los <a href="https://drive.google.com/file/d/1RraQ6EktGUvKIv_f0yxvvux0ktjjOeGH/view" target="_blank">Términos y Condiciones</a>.
+                Acepto los <a href="https://drive.google.com/file/d/1RraQ6EktGUvKIv_f0yxvvux0ktjjOeGH/view" target="_blank" onclick="event.stopPropagation()">Términos y Condiciones</a>.
             </label>
         </div>
 
@@ -129,7 +157,7 @@
     </div>
 
     <div id="success" class="hidden" style="text-align:center; padding:50px; color:var(--primary-blue);">
-        <h2>¡Enviado con Éxito!</h2>
+        <h2>¡Solicitud Enviada!</h2>
         <button onclick="location.reload()">Nueva Carga</button>
     </div>
 </div>
@@ -240,7 +268,7 @@
         d.append('fecha_envio', new Date().toLocaleString());
         d.append('adherentes', JSON.stringify(adherentes));
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxGKg-zZuNWRhsqgF3UzkvTexMDG6-uezpMe_aGAtXt7VWOAKDd9l3-mYZR2f2Bim-t/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwi47eIgQml89ycPz1fo61RjsKz21GI3_oVKY7CIt8YFwSnRDDaHPT0jJpGk1e0WLck/exec';
 
         try {
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: d });
